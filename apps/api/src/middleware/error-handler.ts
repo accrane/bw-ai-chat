@@ -1,10 +1,29 @@
 import type { NextFunction, Request, Response } from 'express';
+import multer from 'multer';
+import { ZodError } from 'zod';
 import type { ApiErrorResponse } from '@bellaworks/shared';
 import { HttpError } from '../lib/errors.js';
 import { logger } from '../lib/logger.js';
 
 export function errorHandler(err: unknown, req: Request, res: Response, _next: NextFunction): void {
   const requestId = typeof req.id === 'string' ? req.id : undefined;
+
+  if (err instanceof ZodError) {
+    const detail = err.issues.map((i) => `${i.path.join('.') || 'body'}: ${i.message}`).join('; ');
+    const body: ApiErrorResponse = {
+      error: { code: 'validation_error', message: detail, requestId },
+    };
+    res.status(400).json(body);
+    return;
+  }
+
+  if (err instanceof multer.MulterError) {
+    const body: ApiErrorResponse = {
+      error: { code: 'upload_error', message: err.message, requestId },
+    };
+    res.status(400).json(body);
+    return;
+  }
 
   if (err instanceof HttpError) {
     const body: ApiErrorResponse = {

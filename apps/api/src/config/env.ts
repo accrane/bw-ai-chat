@@ -8,6 +8,8 @@ const EnvSchema = z.object({
   DATABASE_URL: z.string().min(1),
   APP_DATABASE_URL: z.string().min(1),
   SESSION_JWT_SECRET: z.string().min(32, 'SESSION_JWT_SECRET must be at least 32 characters'),
+  OPENAI_API_KEY: z.string().min(1).optional(),
+  EMBEDDINGS_PROVIDER: z.enum(['openai', 'fake']).optional(),
 });
 
 const parsed = EnvSchema.safeParse(process.env);

@@ -2,6 +2,11 @@ import { createApp } from './app.js';
 import { env } from './config/env.js';
 import { closePools } from './db/pool.js';
 import { logger } from './lib/logger.js';
+import { startQueue, stopQueue } from './queue/queue.js';
+import { registerIngestWorker } from './queue/worker.js';
+
+await startQueue();
+await registerIngestWorker();
 
 const app = createApp();
 const server = app.listen(env.PORT, () => {
@@ -11,6 +16,7 @@ const server = app.listen(env.PORT, () => {
 async function shutdown(signal: string): Promise<void> {
   logger.info({ signal }, 'shutting down');
   server.close(async () => {
+    await stopQueue();
     await closePools();
     process.exit(0);
   });

@@ -39,6 +39,19 @@ curl -H "Origin: https://whitewater.com" http://localhost:3001/v1/widget/whitewa
 curl -X POST -H "Origin: https://whitewater.com" http://localhost:3001/v1/widget/whitewater/session
 ```
 
+Knowledge base (Phase 2) — `pnpm ingest-samples` loads demo content, then:
+
+```bash
+curl -X POST http://localhost:3001/v1/knowledge/search \
+  -H "Authorization: Bearer bw_sk_..." -H "Content-Type: application/json" \
+  -d '{"query": "how do refunds work?"}'
+```
+
+Without `OPENAI_API_KEY` in `apps/api/.env`, a deterministic offline embeddings
+provider is used (similarity = lexical overlap); set a key for real semantic
+search. Ingestion runs through pg-boss background jobs — check document
+`status` via `GET /v1/knowledge/documents`.
+
 Or serve `test-pages/` (`python3 -m http.server 5173`) and open
 `http://localhost:5173/origin-check.html` for a real-browser test.
 
@@ -69,3 +82,9 @@ proving cross-tenant reads are impossible even for unfiltered queries.
 - **JSONB + zod.** `clients.branding` / `clients.ai_settings` are validated by
   the schemas in `packages/shared`; adding a branding field is a schema change,
   not a migration.
+- **RAG pipeline (Phase 2).** Documents are chunked heading-aware (~800-token
+  max, gpt-tokenizer counts), hashed at document and chunk level so re-syncs
+  embed only what changed, and stored in pgvector (HNSW, cosine). Embeddings
+  go through an `EmbeddingsProvider` interface (OpenAI or offline fake).
+  Processing runs in pg-boss jobs under the same tenant-scoped RLS context as
+  requests.

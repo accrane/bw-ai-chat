@@ -5,6 +5,7 @@ import { appPool } from './db/pool.js';
 import { logger } from './lib/logger.js';
 import { errorHandler } from './middleware/error-handler.js';
 import { notFound } from './lib/errors.js';
+import { knowledgeRouter } from './modules/knowledge/routes.js';
 import { widgetRouter } from './modules/widget/routes.js';
 
 export function createApp(): express.Express {
@@ -37,6 +38,7 @@ export function createApp(): express.Express {
   });
 
   app.use('/v1/widget', widgetRouter);
+  app.use('/v1/knowledge', knowledgeRouter);
 
   app.use((req, _res, next) =>
     next(notFound('not_found', `No route for ${req.method} ${req.path}`)),

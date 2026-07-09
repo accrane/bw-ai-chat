@@ -5,3 +5,13 @@ export type {
   WidgetSessionResponse,
   ApiErrorResponse,
 } from './widget-api.js';
+export { SOURCE_TYPES } from './knowledge-api.js';
+export type {
+  SourceType,
+  DocumentStatus,
+  KnowledgeDocument,
+  IngestResponse,
+  ListDocumentsResponse,
+  SearchResult,
+  SearchResponse,
+} from './knowledge-api.js';
