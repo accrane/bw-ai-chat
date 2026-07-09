@@ -19,14 +19,22 @@ const uid = (): string =>
     ? crypto.randomUUID()
     : `${Date.now()}-${Math.random()}`;
 
-export function App({ clientId, apiBase }: { clientId: string; apiBase: string }) {
+export function App({
+  clientId,
+  apiBase,
+  preview = false,
+}: {
+  clientId: string;
+  apiBase: string;
+  preview?: boolean;
+}) {
   const [config, setConfig] = useState<WidgetConfigResponse | null>(null);
 
   useEffect(() => {
-    fetchConfig(apiBase, clientId)
+    fetchConfig(apiBase, clientId, preview)
       .then(setConfig)
       .catch((err) => console.warn('[bellaworks-chat] disabled:', err));
-  }, [apiBase, clientId]);
+  }, [apiBase, clientId, preview]);
 
   if (!config) return null;
   return (

@@ -12,6 +12,8 @@ const EnvSchema = z.object({
   EMBEDDINGS_PROVIDER: z.enum(['openai', 'fake']).optional(),
   LLM_PROVIDER: z.enum(['openai', 'fake']).optional(),
   SECRETS_KEY: z.string().min(1).optional(),
+  ADMIN_JWT_SECRET: z.string().min(32, 'ADMIN_JWT_SECRET must be at least 32 characters'),
+  DASHBOARD_ORIGIN: z.string().url().optional(),
 });
 
 const parsed = EnvSchema.safeParse(process.env);

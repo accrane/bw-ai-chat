@@ -22,7 +22,10 @@ class BellaworksChatElement extends HTMLElement {
     }
     const apiBase = this.getAttribute('api-url') ?? SCRIPT_ORIGIN;
     const shadow = this.attachShadow({ mode: 'open' });
-    render(<App clientId={clientId} apiBase={apiBase} />, shadow);
+    render(
+      <App clientId={clientId} apiBase={apiBase} preview={this.hasAttribute('preview')} />,
+      shadow,
+    );
   }
 }
 

@@ -15,8 +15,11 @@ export interface StreamHandlers {
 export async function fetchConfig(
   apiBase: string,
   clientId: string,
+  bustCache = false,
 ): Promise<WidgetConfigResponse> {
-  const res = await fetch(`${apiBase}/v1/widget/${clientId}/config`);
+  // preview mode (dashboard branding editor) must not see the 5-min cache
+  const suffix = bustCache ? `?t=${Date.now()}` : '';
+  const res = await fetch(`${apiBase}/v1/widget/${clientId}/config${suffix}`);
   if (!res.ok) throw new Error(`widget config failed (${res.status})`);
   return (await res.json()) as WidgetConfigResponse;
 }

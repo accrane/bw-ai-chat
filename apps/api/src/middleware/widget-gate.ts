@@ -1,4 +1,5 @@
 import type { NextFunction, Request, Response } from 'express';
+import { env } from '../config/env.js';
 import { isOriginAllowed } from '../lib/domains.js';
 import { badRequest, forbidden, notFound } from '../lib/errors.js';
 import { findClientBySlug, type ClientRecord } from '../modules/clients/repository.js';
@@ -27,7 +28,11 @@ export async function widgetGate(req: Request, res: Response, next: NextFunction
   if (!client) throw notFound('unknown_client', 'No client with this id.');
 
   const origin = req.headers.origin;
-  const allowed = isOriginAllowed(origin, client.allowedDomains);
+  // The dashboard's own origin is implicitly allowed so the branding editor
+  // can preview any client's widget.
+  const allowed =
+    isOriginAllowed(origin, client.allowedDomains) ||
+    (!!env.DASHBOARD_ORIGIN && origin === env.DASHBOARD_ORIGIN);
 
   res.setHeader('Vary', 'Origin');
   if (origin && allowed) {

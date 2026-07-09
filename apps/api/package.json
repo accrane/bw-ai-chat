@@ -12,6 +12,7 @@
     "test:integration": "vitest run tests/integration",
     "seed": "tsx scripts/seed.ts",
     "ingest-samples": "tsx scripts/ingest-samples.ts",
+    "create-admin": "tsx scripts/create-admin.ts",
     "db:role": "tsx scripts/db-role.ts"
   },
   "dependencies": {
