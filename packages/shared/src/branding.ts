@@ -20,6 +20,9 @@ export const BrandingSchema = z.object({
   fontFamily: z.string().max(200).default('system-ui, sans-serif'),
   position: z.enum(['bottom-right', 'bottom-left']).default('bottom-right'),
   theme: z.enum(['light', 'dark', 'auto']).default('auto'),
+  /** Footer credit line in the chat panel; hidden entirely when showCredit is false. */
+  creditText: z.string().max(100).default('Powered by Bellaworks'),
+  showCredit: z.boolean().default(true),
 });
 
 export type Branding = z.infer<typeof BrandingSchema>;

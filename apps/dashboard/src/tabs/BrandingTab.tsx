@@ -200,6 +200,24 @@ export function BrandingTab({ client }: { client: ClientDetail }) {
               <option value="dark">dark</option>
             </select>
           </Field>
+          <Field label="Footer credit text">
+            <TextInput
+              value={branding.creditText}
+              disabled={!branding.showCredit}
+              onChange={(e) => set('creditText', e.target.value)}
+              placeholder="Powered by Bellaworks"
+            />
+          </Field>
+          <Field label="Footer credit">
+            <label className="flex items-center gap-2 py-1.5 text-sm text-slate-700">
+              <input
+                type="checkbox"
+                checked={branding.showCredit}
+                onChange={(e) => set('showCredit', e.target.checked)}
+              />
+              Show the credit line in the chat footer
+            </label>
+          </Field>
         </div>
       </Card>
 

@@ -258,7 +258,10 @@ function Widget({
               <SendIcon />
             </button>
           </form>
-          <div class="credit">Powered by Bellaworks</div>
+          {/* missing field (config cached before an update) must default to shown */}
+          {branding.showCredit !== false && (
+            <div class="credit">{branding.creditText ?? 'Powered by Bellaworks'}</div>
+          )}
         </div>
       )}
 
