@@ -85,6 +85,7 @@ export interface AdminMessage {
   inputTokens: number | null;
   outputTokens: number | null;
   latencyMs: number | null;
+  rating: number | null;
   sources: { title: string; url: string | null }[];
 }
 
@@ -92,6 +93,15 @@ export interface UsageSummary {
   months: { month: string; tokens: number }[];
   days: { day: string; questions: number; unanswered: number }[];
   totals: { conversations: number; messages: number; documents: number };
+  satisfaction: { up: number; down: number };
+  avgLatencyMs: number | null;
+  topDocuments: { title: string; citations: number }[];
+}
+
+export interface UnansweredQuestion {
+  question: string;
+  times: number;
+  lastAsked: string;
 }
 
 export type { KnowledgeDocument };

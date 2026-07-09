@@ -114,6 +114,23 @@ export async function recentMessages(
   return rows.reverse();
 }
 
+/** Rates an assistant message, only if it belongs to the caller's session. */
+export async function rateMessage(
+  db: pg.PoolClient,
+  messageId: string,
+  sessionId: string,
+  rating: 1 | -1,
+): Promise<boolean> {
+  const res = await db.query(
+    `update messages m set rating = $2
+       from conversations c
+      where m.id = $1 and c.id = m.conversation_id
+        and c.session_id = $3 and m.role = 'assistant'`,
+    [messageId, rating, sessionId],
+  );
+  return (res.rowCount ?? 0) > 0;
+}
+
 export async function getMonthUsage(db: pg.PoolClient, clientId: string): Promise<number> {
   const { rows } = await db.query<{ tokens: string }>(
     `select tokens from usage_counters

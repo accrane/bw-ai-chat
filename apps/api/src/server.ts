@@ -2,11 +2,13 @@ import { createApp } from './app.js';
 import { env } from './config/env.js';
 import { closePools } from './db/pool.js';
 import { logger } from './lib/logger.js';
+import { registerMaintenance } from './queue/maintenance.js';
 import { startQueue, stopQueue } from './queue/queue.js';
 import { registerIngestWorker } from './queue/worker.js';
 
 await startQueue();
 await registerIngestWorker();
+await registerMaintenance();
 
 const app = createApp();
 const server = app.listen(env.PORT, () => {

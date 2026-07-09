@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import type { Branding, ChatSource, WidgetConfigResponse } from '@bellaworks/shared';
 import { ChatClient, fetchConfig } from './api.js';
-import { ChatIcon, CloseIcon, SendIcon } from './icons.js';
+import { ChatIcon, CloseIcon, SendIcon, ThumbIcon } from './icons.js';
 import { renderMarkdown } from './markdown.js';
 import { baseStyles, hostVars } from './styles.js';
 
@@ -12,6 +12,10 @@ interface Msg {
   sources?: ChatSource[];
   streaming?: boolean;
   failed?: boolean;
+  /** id of the persisted assistant message, required for feedback */
+  serverId?: string;
+  answered?: boolean;
+  rating?: 1 | -1;
 }
 
 const uid = (): string =>
@@ -128,8 +132,10 @@ function Widget({
     setBusy(true);
     try {
       await chat.send(text, {
+        onMeta: (serverId) => update(botId, (m) => ({ ...m, serverId })),
         onDelta: (delta) => update(botId, (m) => ({ ...m, text: m.text + delta })),
         onSources: (sources) => update(botId, (m) => (sources.length ? { ...m, sources } : m)),
+        onDone: (answered) => update(botId, (m) => ({ ...m, answered })),
       });
       update(botId, (m) => ({ ...m, streaming: false }));
     } catch {
@@ -196,6 +202,28 @@ function Widget({
                     <div dangerouslySetInnerHTML={{ __html: renderMarkdown(m.text) }} />
                   )}
                 </div>
+                {m.role === 'assistant' &&
+                  !m.streaming &&
+                  !m.failed &&
+                  m.serverId &&
+                  m.answered && (
+                    <div class="feedback">
+                      {([1, -1] as const).map((value) => (
+                        <button
+                          aria-label={value === 1 ? 'Helpful' : 'Not helpful'}
+                          aria-pressed={m.rating === value}
+                          class={m.rating === value ? 'active' : ''}
+                          disabled={m.rating !== undefined}
+                          onClick={() => {
+                            update(m.id, (msg) => ({ ...msg, rating: value }));
+                            chat.sendFeedback(m.serverId!, value).catch(() => undefined);
+                          }}
+                        >
+                          <ThumbIcon down={value === -1} />
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 {m.sources && (
                   <div class="sources">
                     Sources:{' '}

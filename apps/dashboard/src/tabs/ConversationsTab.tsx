@@ -1,7 +1,7 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { get, type AdminMessage, type ClientDetail, type ConversationSummary } from '../api';
-import { Card, ErrorNote, Spinner } from '../ui';
+import { del, get, type AdminMessage, type ClientDetail, type ConversationSummary } from '../api';
+import { Button, Card, ErrorNote, Spinner } from '../ui';
 
 function Transcript({ clientId, conversationId }: { clientId: string; conversationId: string }) {
   const messages = useQuery({
@@ -32,6 +32,7 @@ function Transcript({ clientId, conversationId }: { clientId: string; conversati
               <>
                 {' · '}
                 {m.answered ? (m.model ?? 'llm') : 'fallback (unanswered)'}
+                {m.rating != null && (m.rating === 1 ? ' · 👍' : ' · 👎')}
                 {m.inputTokens != null && ` · ${m.inputTokens}→${m.outputTokens} tokens`}
                 {m.latencyMs != null && ` · ${m.latencyMs}ms`}
                 {m.sources.length > 0 && ` · sources: ${m.sources.map((s) => s.title).join(', ')}`}
@@ -45,6 +46,7 @@ function Transcript({ clientId, conversationId }: { clientId: string; conversati
 }
 
 export function ConversationsTab({ client }: { client: ClientDetail }) {
+  const queryClient = useQueryClient();
   const [selected, setSelected] = useState<string | null>(null);
   const conversations = useQuery({
     queryKey: ['conversations', client.id],
@@ -52,6 +54,15 @@ export function ConversationsTab({ client }: { client: ClientDetail }) {
       get<{ conversations: ConversationSummary[]; total: number }>(
         `/v1/admin/clients/${client.id}/conversations?limit=50`,
       ),
+  });
+
+  const remove = useMutation({
+    mutationFn: (conversationId: string) =>
+      del(`/v1/admin/clients/${client.id}/conversations/${conversationId}`),
+    onSuccess: (_data, conversationId) => {
+      if (selected === conversationId) setSelected(null);
+      void queryClient.invalidateQueries({ queryKey: ['conversations', client.id] });
+    },
   });
 
   if (conversations.isLoading) return <Spinner />;
@@ -85,7 +96,25 @@ export function ConversationsTab({ client }: { client: ClientDetail }) {
       </Card>
       <Card title="Transcript">
         {selected ? (
-          <Transcript clientId={client.id} conversationId={selected} />
+          <>
+            <Transcript clientId={client.id} conversationId={selected} />
+            <div className="mt-4 border-t border-slate-100 pt-3 text-right">
+              <Button
+                variant="danger"
+                onClick={() => {
+                  if (
+                    confirm(
+                      'Permanently delete this conversation (e.g. a visitor erasure request)?',
+                    )
+                  ) {
+                    remove.mutate(selected);
+                  }
+                }}
+              >
+                Delete conversation
+              </Button>
+            </div>
+          </>
         ) : (
           <p className="text-sm text-slate-500">Select a conversation.</p>
         )}

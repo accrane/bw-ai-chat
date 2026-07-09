@@ -166,6 +166,67 @@ adminRouter.get('/clients/:id/conversations/:convId', async (req: Request, res: 
   res.json({ messages });
 });
 
+adminRouter.delete('/clients/:id/conversations/:convId', async (req: Request, res: Response) => {
+  const deleted = await repo.deleteConversation(
+    uuidParam(req.params.id),
+    uuidParam(req.params.convId),
+  );
+  if (!deleted) throw notFound('unknown_conversation', 'No conversation with this id.');
+  res.status(204).end();
+});
+
 adminRouter.get('/clients/:id/usage', async (req: Request, res: Response) => {
   res.json(await repo.getUsage(uuidParam(req.params.id)));
+});
+
+adminRouter.get('/clients/:id/unanswered', async (req: Request, res: Response) => {
+  res.json({ questions: await repo.getUnansweredQuestions(uuidParam(req.params.id)) });
+});
+
+const csv = (rows: (string | number | null)[][]): string =>
+  rows
+    .map((row) =>
+      row
+        .map(
+          (v) =>
+            `"${String(v ?? '')
+              .replaceAll('"', '""')
+              .replaceAll('\n', ' ')}"`,
+        )
+        .join(','),
+    )
+    .join('\r\n');
+
+adminRouter.get('/clients/:id/export/conversations.csv', async (req: Request, res: Response) => {
+  const rows = await repo.exportMessages(uuidParam(req.params.id));
+  res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+  res.setHeader('Content-Disposition', 'attachment; filename="conversations.csv"');
+  res.send(
+    csv([
+      [
+        'conversation_id',
+        'time',
+        'role',
+        'content',
+        'answered',
+        'rating',
+        'model',
+        'input_tokens',
+        'output_tokens',
+      ],
+      ...rows,
+    ]),
+  );
+});
+
+adminRouter.get('/clients/:id/export/unanswered.csv', async (req: Request, res: Response) => {
+  const questions = await repo.getUnansweredQuestions(uuidParam(req.params.id));
+  res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+  res.setHeader('Content-Disposition', 'attachment; filename="unanswered.csv"');
+  res.send(
+    csv([
+      ['question', 'times_asked', 'last_asked'],
+      ...questions.map((q) => [q.question, q.times, q.lastAsked]),
+    ]),
+  );
 });

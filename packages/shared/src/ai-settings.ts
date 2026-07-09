@@ -22,6 +22,8 @@ export const AiSettingsSchema = z.object({
       "I'm not sure about that one. Please reach out to us directly and we'll be happy to help!",
     ),
   apiKeyOverride: z.string().nullable().default(null),
+  /** Conversations older than this many days are purged nightly; null keeps them forever. */
+  retentionDays: z.number().int().min(1).max(3650).nullable().default(null),
 });
 
 export type AiSettings = z.infer<typeof AiSettingsSchema>;

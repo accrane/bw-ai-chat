@@ -30,6 +30,16 @@ export function createApp(): express.Express {
   );
   app.use((req, res, next) => {
     res.setHeader('X-Request-Id', String(req.id));
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+    if (req.path.startsWith('/admin')) {
+      res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+      res.setHeader(
+        'Content-Security-Policy',
+        "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; " +
+          "img-src 'self' data: https:; connect-src 'self'; frame-ancestors 'self'",
+      );
+    }
     next();
   });
 

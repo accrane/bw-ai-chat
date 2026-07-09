@@ -8,8 +8,10 @@ import { clearSession, loadSession, saveSession, updateConversation } from './se
 import { createSseParser } from './sse.js';
 
 export interface StreamHandlers {
+  onMeta?: (messageId: string) => void;
   onDelta: (text: string) => void;
   onSources: (sources: ChatSource[]) => void;
+  onDone?: (answered: boolean) => void;
 }
 
 export async function fetchConfig(
@@ -57,6 +59,19 @@ export class ChatClient {
     return (await res.json()) as ConversationResponse;
   }
 
+  async sendFeedback(messageId: string, rating: 1 | -1): Promise<void> {
+    const stored = loadSession(this.clientId);
+    if (!stored) return;
+    await fetch(`${this.apiBase}/v1/chat/${this.clientId}/messages/${messageId}/feedback`, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        authorization: `Bearer ${stored.token}`,
+      },
+      body: JSON.stringify({ rating }),
+    });
+  }
+
   async send(message: string, handlers: StreamHandlers): Promise<void> {
     try {
       await this.sendOnce(message, handlers);
@@ -93,8 +108,14 @@ export class ChatClient {
     let streamError: string | null = null;
     const parse = createSseParser((event) => {
       if (event.type === 'meta') {
-        const { conversationId: id } = event.data as { conversationId: string };
+        const { conversationId: id, messageId } = event.data as {
+          conversationId: string;
+          messageId: string;
+        };
         updateConversation(this.clientId, id);
+        handlers.onMeta?.(messageId);
+      } else if (event.type === 'done') {
+        handlers.onDone?.((event.data as { answered: boolean }).answered);
       } else if (event.type === 'delta') {
         handlers.onDelta((event.data as { text: string }).text);
       } else if (event.type === 'sources') {

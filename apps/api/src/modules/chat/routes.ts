@@ -1,9 +1,11 @@
 import { Router, type Request, type Response } from 'express';
 import { z } from 'zod';
 import type { ChatErrorEvent } from '@bellaworks/shared';
-import { HttpError } from '../../lib/errors.js';
+import { withDbContext } from '../../db/context.js';
+import { HttpError, notFound } from '../../lib/errors.js';
+import * as chatRepo from './repository.js';
 import { logger } from '../../lib/logger.js';
-import { rateLimit } from '../../middleware/rate-limit.js';
+import { pgRateLimit } from '../../middleware/pg-rate-limit.js';
 import { sessionAuth, sessionLocals } from '../../middleware/session-auth.js';
 import { widgetGate, widgetLocals } from '../../middleware/widget-gate.js';
 import { getConversationWithMessages, handleChatMessage } from './service.js';
@@ -15,7 +17,8 @@ const MessageSchema = z.object({
 
 // Per-session, on top of the per-IP limits elsewhere: one visitor can't burn
 // a client's token budget in a loop.
-const messageLimiter = rateLimit({
+const messageLimiter = pgRateLimit({
+  scope: 'chat',
   windowMs: 60_000,
   max: 12,
   keyOf: (_req, res) => sessionLocals(res).sessionId,
@@ -68,6 +71,18 @@ chatRouter.post('/:slug/messages', messageLimiter, async (req: Request, res: Res
     send('error', payload);
   }
   res.end();
+});
+
+chatRouter.post('/:slug/messages/:id/feedback', async (req: Request, res: Response) => {
+  const messageId = z.string().uuid().parse(req.params.id);
+  const { rating } = z.object({ rating: z.union([z.literal(1), z.literal(-1)]) }).parse(req.body);
+  const { client } = widgetLocals(res);
+  const { sessionId } = sessionLocals(res);
+  const rated = await withDbContext({ tenantId: client.id }, (db) =>
+    chatRepo.rateMessage(db, messageId, sessionId, rating),
+  );
+  if (!rated) throw notFound('unknown_message', 'No such message in this session.');
+  res.status(204).end();
 });
 
 chatRouter.get('/:slug/conversations/:id', async (req: Request, res: Response) => {

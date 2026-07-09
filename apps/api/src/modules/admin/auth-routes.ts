@@ -6,7 +6,7 @@ import { ADMIN_TTL_SECONDS, signAdminToken } from '../../lib/admin-token.js';
 import { unauthorized } from '../../lib/errors.js';
 import { verifyPassword } from '../../lib/password.js';
 import { ADMIN_COOKIE, adminAuth, adminLocals } from '../../middleware/admin-auth.js';
-import { rateLimit } from '../../middleware/rate-limit.js';
+import { pgRateLimit } from '../../middleware/pg-rate-limit.js';
 
 const LoginSchema = z.object({
   email: z.string().email(),
@@ -23,7 +23,7 @@ const cookieOptions = {
 
 export const adminAuthRouter = Router();
 
-const loginLimiter = rateLimit({ windowMs: 60_000, max: 5 });
+const loginLimiter = pgRateLimit({ scope: 'admin-login', windowMs: 60_000, max: 5 });
 
 adminAuthRouter.post('/login', loginLimiter, async (req: Request, res: Response) => {
   const { email, password } = LoginSchema.parse(req.body);

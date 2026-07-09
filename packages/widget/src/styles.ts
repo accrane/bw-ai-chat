@@ -166,6 +166,26 @@ export const baseStyles = `
 .msg code { font-family: ui-monospace, monospace; font-size: 0.9em; }
 .msg.failed { opacity: 0.85; font-style: italic; }
 
+.feedback {
+  align-self: flex-start;
+  display: flex;
+  gap: 4px;
+  margin: -4px 0 0 4px;
+}
+.feedback button {
+  background: transparent;
+  border: none;
+  color: var(--text);
+  opacity: 0.35;
+  cursor: pointer;
+  padding: 3px;
+  border-radius: 4px;
+  display: flex;
+}
+.feedback button:hover:not(:disabled) { opacity: 0.8; background: var(--bubble-bg); }
+.feedback button.active { opacity: 1; color: var(--bw-primary, #2563eb); }
+.feedback button:disabled:not(.active) { cursor: default; }
+
 .sources {
   align-self: flex-start;
   font-size: 11px;

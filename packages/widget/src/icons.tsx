@@ -19,6 +19,19 @@ export const CloseIcon = () => (
   </svg>
 );
 
+export const ThumbIcon = ({ down = false }: { down?: boolean }) => (
+  <svg
+    width="13"
+    height="13"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    aria-hidden="true"
+    style={down ? { transform: 'rotate(180deg)' } : undefined}
+  >
+    <path d="M2 10h4v11H2V10Zm20 1.5a2 2 0 0 0-2-2h-5.3l.9-4.3a1.7 1.7 0 0 0-.5-1.6L14 2.5 8.6 8.4A2 2 0 0 0 8 9.8V19a2 2 0 0 0 2 2h7.5a2 2 0 0 0 2-1.6l1.5-6.5a2 2 0 0 0 0-.9l1-.5Z" />
+  </svg>
+);
+
 export const SendIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
     <path d="M3.4 20.6 21.2 12 3.4 3.4l2.3 7.4 9.3 1.2-9.3 1.2-2.3 7.4Z" />

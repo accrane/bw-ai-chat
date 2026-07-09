@@ -118,6 +118,23 @@ export function SettingsTab({ client }: { client: ClientDetail }) {
               onChange={(e) => setAi({ ...ai, maxHistoryMessages: num(e.target.value, 10) })}
             />
           </Field>
+          <Field
+            label="Retention (days)"
+            hint="Conversations older than this are purged nightly; blank keeps them forever"
+          >
+            <TextInput
+              type="number"
+              min="1"
+              max="3650"
+              value={ai.retentionDays ?? ''}
+              onChange={(e) =>
+                setAi({
+                  ...ai,
+                  retentionDays: e.target.value === '' ? null : num(e.target.value, 365),
+                })
+              }
+            />
+          </Field>
         </div>
         <div className="mt-4 grid gap-4">
           <Field

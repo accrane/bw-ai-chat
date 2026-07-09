@@ -3,7 +3,7 @@ import type { WidgetConfigResponse, WidgetSessionResponse } from '@bellaworks/sh
 import { env } from '../../config/env.js';
 import { newSessionId } from '../../lib/crypto.js';
 import { signSessionToken } from '../../lib/session-token.js';
-import { rateLimit } from '../../middleware/rate-limit.js';
+import { pgRateLimit } from '../../middleware/pg-rate-limit.js';
 import { widgetGate, widgetLocals } from '../../middleware/widget-gate.js';
 
 export const widgetRouter = Router();
@@ -21,7 +21,7 @@ widgetRouter.get('/:slug/config', (_req: Request, res: Response) => {
   res.json(body);
 });
 
-const sessionLimiter = rateLimit({ windowMs: 60_000, max: 30 });
+const sessionLimiter = pgRateLimit({ scope: 'session-mint', windowMs: 60_000, max: 30 });
 
 widgetRouter.post('/:slug/session', sessionLimiter, async (_req: Request, res: Response) => {
   const { client, origin } = widgetLocals(res);

@@ -247,6 +247,7 @@ export interface AdminMessage {
   inputTokens: number | null;
   outputTokens: number | null;
   latencyMs: number | null;
+  rating: number | null;
   sources: { title: string; url: string | null }[];
 }
 
@@ -269,9 +270,10 @@ export async function getConversationMessages(
       output_tokens: number | null;
       latency_ms: number | null;
       source_chunk_ids: string[];
+      rating: number | null;
     }>(
       `select id, role, content, created_at, answered, model, input_tokens, output_tokens,
-              latency_ms, source_chunk_ids
+              latency_ms, source_chunk_ids, rating
          from messages where conversation_id = $1 order by created_at asc`,
       [conversationId],
     );
@@ -308,9 +310,83 @@ export async function getConversationMessages(
         inputTokens: r.input_tokens,
         outputTokens: r.output_tokens,
         latencyMs: r.latency_ms,
+        rating: r.rating,
         sources,
       };
     });
+  });
+}
+
+export async function deleteConversation(
+  clientId: string,
+  conversationId: string,
+): Promise<boolean> {
+  const res = await adminPool.query(`delete from conversations where id = $1 and client_id = $2`, [
+    conversationId,
+    clientId,
+  ]);
+  return (res.rowCount ?? 0) > 0;
+}
+
+export interface UnansweredQuestion {
+  question: string;
+  times: number;
+  lastAsked: string;
+}
+
+/** Fallback answers paired with the visitor question that triggered them. */
+export async function getUnansweredQuestions(clientId: string): Promise<UnansweredQuestion[]> {
+  return withDbContext({ tenantId: clientId }, async (db) => {
+    const { rows } = await db.query<{ question: string; times: string; last_asked: Date }>(
+      `select u.content as question, count(*) as times, max(a.created_at) as last_asked
+         from messages a
+         join lateral (
+           select content from messages u
+            where u.conversation_id = a.conversation_id
+              and u.role = 'user' and u.created_at < a.created_at
+            order by u.created_at desc limit 1
+         ) u on true
+        where a.role = 'assistant' and a.answered = false
+        group by u.content
+        order by times desc, last_asked desc
+        limit 100`,
+    );
+    return rows.map((r) => ({
+      question: r.question,
+      times: Number(r.times),
+      lastAsked: r.last_asked.toISOString(),
+    }));
+  });
+}
+
+export async function exportMessages(clientId: string): Promise<(string | number | null)[][]> {
+  return withDbContext({ tenantId: clientId }, async (db) => {
+    const { rows } = await db.query<{
+      conversation_id: string;
+      created_at: Date;
+      role: string;
+      content: string;
+      answered: boolean;
+      rating: number | null;
+      model: string | null;
+      input_tokens: number | null;
+      output_tokens: number | null;
+    }>(
+      `select conversation_id, created_at, role, content, answered, rating, model,
+              input_tokens, output_tokens
+         from messages order by conversation_id, created_at limit 50000`,
+    );
+    return rows.map((r) => [
+      r.conversation_id,
+      r.created_at.toISOString(),
+      r.role,
+      r.content,
+      r.role === 'assistant' ? String(r.answered) : '',
+      r.rating,
+      r.model,
+      r.input_tokens,
+      r.output_tokens,
+    ]);
   });
 }
 
@@ -318,11 +394,14 @@ export interface UsageSummary {
   months: { month: string; tokens: number }[];
   days: { day: string; questions: number; unanswered: number }[];
   totals: { conversations: number; messages: number; documents: number };
+  satisfaction: { up: number; down: number };
+  avgLatencyMs: number | null;
+  topDocuments: { title: string; citations: number }[];
 }
 
 export async function getUsage(clientId: string): Promise<UsageSummary> {
   return withDbContext({ tenantId: clientId }, async (db) => {
-    const [months, days, totals] = await Promise.all([
+    const [months, days, totals, quality, topDocs] = await Promise.all([
       db.query<{ month: Date; tokens: string }>(
         `select month, tokens from usage_counters order by month desc limit 12`,
       ),
@@ -338,6 +417,21 @@ export async function getUsage(clientId: string): Promise<UsageSummary> {
         `select (select count(*) from conversations) as conversations,
                 (select count(*) from messages) as messages,
                 (select count(*) from documents) as documents`,
+      ),
+      db.query<{ up: string; down: string; avg_latency: string | null }>(
+        `select count(*) filter (where rating = 1) as up,
+                count(*) filter (where rating = -1) as down,
+                avg(latency_ms) filter (where answered) as avg_latency
+           from messages where role = 'assistant'`,
+      ),
+      db.query<{ title: string; citations: string }>(
+        `select d.title, count(*) as citations
+           from messages m
+           cross join lateral unnest(m.source_chunk_ids) as chunk_id
+           join chunks c on c.id = chunk_id
+           join documents d on d.id = c.document_id
+          group by d.title
+          order by citations desc limit 5`,
       ),
     ]);
     return {
@@ -355,6 +449,18 @@ export async function getUsage(clientId: string): Promise<UsageSummary> {
         messages: Number(totals.rows[0]!.messages),
         documents: Number(totals.rows[0]!.documents),
       },
+      satisfaction: {
+        up: Number(quality.rows[0]!.up),
+        down: Number(quality.rows[0]!.down),
+      },
+      avgLatencyMs:
+        quality.rows[0]!.avg_latency === null
+          ? null
+          : Math.round(Number(quality.rows[0]!.avg_latency)),
+      topDocuments: topDocs.rows.map((r) => ({
+        title: r.title,
+        citations: Number(r.citations),
+      })),
     };
   });
 }
