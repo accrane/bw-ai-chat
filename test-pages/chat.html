@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Bellaworks chat API — streaming test page</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        max-width: 720px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+      #log {
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        padding: 1rem;
+        min-height: 200px;
+        white-space: pre-wrap;
+      }
+      .user {
+        color: #1d4ed8;
+      }
+      .sources {
+        color: #6b7280;
+        font-size: 0.85em;
+      }
+      form {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1rem;
+      }
+      input {
+        flex: 1;
+        padding: 0.5rem;
+      }
+      button {
+        padding: 0.5rem 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Chat test page</h1>
+    <p>
+      Serve from an allowed domain (<code>python3 -m http.server 5173</code> → open
+      <code>http://localhost:5173/chat.html</code>) with the API and
+      <code>pnpm ingest-samples</code> content loaded. Try “how do refunds work?”.
+    </p>
+    <div id="log"></div>
+    <form id="form">
+      <input id="input" placeholder="Ask about trips, pricing, cancellations…" autofocus />
+      <button>Send</button>
+    </form>
+    <script>
+      const API = 'http://localhost:3001';
+      const SLUG = 'whitewater';
+      let token = null;
+      let conversationId = null;
+      const log = document.getElementById('log');
+
+      async function session() {
+        if (token) return token;
+        const res = await fetch(`${API}/v1/widget/${SLUG}/session`, { method: 'POST' });
+        token = (await res.json()).token;
+        return token;
+      }
+
+      document.getElementById('form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const input = document.getElementById('input');
+        const message = input.value.trim();
+        if (!message) return;
+        input.value = '';
+        log.append(
+          Object.assign(document.createElement('div'), {
+            textContent: `You: ${message}`,
+            className: 'user',
+          }),
+        );
+        const answerEl = document.createElement('div');
+        answerEl.textContent = 'Bot: ';
+        log.append(answerEl);
+
+        const res = await fetch(`${API}/v1/chat/${SLUG}/messages`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${await session()}`,
+          },
+          body: JSON.stringify({ message, conversationId: conversationId ?? undefined }),
+        });
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+        for (;;) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          let sep;
+          while ((sep = buffer.indexOf('\n\n')) !== -1) {
+            const block = buffer.slice(0, sep);
+            buffer = buffer.slice(sep + 2);
+            const type = /event: (.+)/.exec(block)?.[1];
+            const data = JSON.parse(/data: (.+)/.exec(block)?.[1] ?? '{}');
+            if (type === 'meta') conversationId = data.conversationId;
+            if (type === 'delta') answerEl.textContent += data.text;
+            if (type === 'sources' && data.sources.length) {
+              const s = document.createElement('div');
+              s.className = 'sources';
+              s.textContent = 'Sources: ' + data.sources.map((x) => x.title).join(', ');
+              log.append(s);
+            }
+            if (type === 'error') answerEl.textContent += ` [error: ${data.message}]`;
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

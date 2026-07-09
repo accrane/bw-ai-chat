@@ -11,17 +11,19 @@ export async function createTestClient(overrides?: {
   allowedDomains?: string[];
   status?: 'active' | 'paused';
   branding?: Record<string, unknown>;
+  aiSettings?: Record<string, unknown>;
 }): Promise<TestClient> {
   const slug = `test-${randomUUID().slice(0, 8)}`;
   const { rows } = await adminPool.query<{ id: string }>(
-    `insert into clients (slug, name, status, allowed_domains, branding)
-     values ($1, $2, $3, $4, $5) returning id`,
+    `insert into clients (slug, name, status, allowed_domains, branding, ai_settings)
+     values ($1, $2, $3, $4, $5, $6) returning id`,
     [
       slug,
       `Test ${slug}`,
       overrides?.status ?? 'active',
       overrides?.allowedDomains ?? ['example.com', 'localhost'],
       overrides?.branding ?? {},
+      overrides?.aiSettings ?? {},
     ],
   );
   return { id: rows[0]!.id, slug };

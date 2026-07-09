@@ -5,6 +5,17 @@ export type {
   WidgetSessionResponse,
   ApiErrorResponse,
 } from './widget-api.js';
+export type {
+  ChatRole,
+  ChatSource,
+  ChatMetaEvent,
+  ChatDeltaEvent,
+  ChatSourcesEvent,
+  ChatDoneEvent,
+  ChatErrorEvent,
+  ChatHistoryMessage,
+  ConversationResponse,
+} from './chat-api.js';
 export { SOURCE_TYPES } from './knowledge-api.js';
 export type {
   SourceType,

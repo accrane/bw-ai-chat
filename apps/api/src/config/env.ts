@@ -10,6 +10,8 @@ const EnvSchema = z.object({
   SESSION_JWT_SECRET: z.string().min(32, 'SESSION_JWT_SECRET must be at least 32 characters'),
   OPENAI_API_KEY: z.string().min(1).optional(),
   EMBEDDINGS_PROVIDER: z.enum(['openai', 'fake']).optional(),
+  LLM_PROVIDER: z.enum(['openai', 'fake']).optional(),
+  SECRETS_KEY: z.string().min(1).optional(),
 });
 
 const parsed = EnvSchema.safeParse(process.env);

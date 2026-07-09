@@ -12,6 +12,15 @@ export const AiSettingsSchema = z.object({
   maxHistoryMessages: z.number().int().min(0).max(50).default(10),
   monthlyTokenBudget: z.number().int().positive().default(2_000_000),
   systemPromptAddendum: z.string().max(4000).default(''),
+  /** Minimum retrieval similarity before the LLM is consulted at all. */
+  relevanceThreshold: z.number().min(0).max(1).default(0.3),
+  /** Streamed verbatim (no LLM call) when retrieval finds nothing relevant or the budget is exhausted. */
+  fallbackMessage: z
+    .string()
+    .max(1000)
+    .default(
+      "I'm not sure about that one. Please reach out to us directly and we'll be happy to help!",
+    ),
   apiKeyOverride: z.string().nullable().default(null),
 });
 

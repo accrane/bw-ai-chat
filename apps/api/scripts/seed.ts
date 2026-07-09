@@ -13,7 +13,9 @@ const branding = BrandingSchema.parse({
   secondaryColor: '#155e75',
 });
 
-const aiSettings = AiSettingsSchema.parse({});
+// Low threshold suits the offline fake embeddings (lexical scores ~0.1);
+// raise toward the 0.3 default when using real OpenAI embeddings.
+const aiSettings = AiSettingsSchema.parse({ relevanceThreshold: 0.05 });
 
 const allowedDomains = ['whitewater.com', 'www.whitewater.com', 'localhost', '127.0.0.1'];
 
@@ -23,7 +25,8 @@ const { rows } = await adminPool.query<{ id: string }>(
    on conflict (slug) do update
      set name = excluded.name,
          allowed_domains = excluded.allowed_domains,
-         branding = excluded.branding
+         branding = excluded.branding,
+         ai_settings = excluded.ai_settings
    returning id`,
   ['whitewater', 'Whitewater Rafting Co.', allowedDomains, branding, aiSettings],
 );

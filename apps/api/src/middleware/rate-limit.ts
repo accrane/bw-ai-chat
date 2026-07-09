@@ -10,11 +10,20 @@ interface Window {
  * Fixed-window in-memory limiter keyed by IP. Good enough for a single API
  * instance; replaced by a Postgres-backed limiter when we scale out (Phase 7).
  */
-export function rateLimit({ windowMs, max }: { windowMs: number; max: number }) {
+export function rateLimit({
+  windowMs,
+  max,
+  keyOf,
+}: {
+  windowMs: number;
+  max: number;
+  /** defaults to the request IP; use for per-session limits */
+  keyOf?: (req: Request, res: Response) => string;
+}) {
   const windows = new Map<string, Window>();
 
   return (req: Request, _res: Response, next: NextFunction): void => {
-    const key = req.ip ?? 'unknown';
+    const key = keyOf ? keyOf(req, _res) : (req.ip ?? 'unknown');
     const now = Date.now();
     const window = windows.get(key);
 
