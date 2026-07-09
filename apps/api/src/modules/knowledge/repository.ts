@@ -86,7 +86,7 @@ export async function insertDocument(
       input.contentHash,
     ],
   );
-  return toDocument(rows[0]!);
+  return withoutHash(toDocument(rows[0]!));
 }
 
 export async function updateDocumentContent(
@@ -102,8 +102,13 @@ export async function updateDocumentContent(
      returning ${DOC_COLUMNS}`,
     [id, input.title, input.url, input.content, input.contentHash],
   );
-  return toDocument(rows[0]!);
+  return withoutHash(toDocument(rows[0]!));
 }
+
+const withoutHash = (doc: KnowledgeDocument & { contentHash: string }): KnowledgeDocument => {
+  const { contentHash: _hash, ...rest } = doc;
+  return rest;
+};
 
 export async function getDocument(
   db: pg.PoolClient,
@@ -113,7 +118,7 @@ export async function getDocument(
     `select ${DOC_COLUMNS} from documents where id = $1`,
     [id],
   );
-  return rows[0] ? toDocument(rows[0]) : null;
+  return rows[0] ? withoutHash(toDocument(rows[0])) : null;
 }
 
 export async function getDocumentWithContent(
@@ -131,15 +136,24 @@ export async function listDocuments(
   db: pg.PoolClient,
   limit: number,
   offset: number,
+  sourceType?: SourceType,
 ): Promise<{ documents: KnowledgeDocument[]; total: number }> {
   const [list, count] = await Promise.all([
     db.query<DocumentRow>(
-      `select ${DOC_COLUMNS} from documents order by updated_at desc limit $1 offset $2`,
-      [limit, offset],
+      `select ${DOC_COLUMNS} from documents
+        where ($3::text is null or source_type = $3)
+        order by updated_at desc limit $1 offset $2`,
+      [limit, offset, sourceType ?? null],
     ),
-    db.query<{ total: string }>(`select count(*) as total from documents`),
+    db.query<{ total: string }>(
+      `select count(*) as total from documents where ($1::text is null or source_type = $1)`,
+      [sourceType ?? null],
+    ),
   ]);
-  return { documents: list.rows.map(toDocument), total: Number(count.rows[0]!.total) };
+  return {
+    documents: list.rows.map((row) => withoutHash(toDocument(row))),
+    total: Number(count.rows[0]!.total),
+  };
 }
 
 export async function deleteDocument(db: pg.PoolClient, id: string): Promise<boolean> {

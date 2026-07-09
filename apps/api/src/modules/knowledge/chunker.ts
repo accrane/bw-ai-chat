@@ -34,12 +34,18 @@ interface Block {
 function parseBlocks(content: string): Block[] {
   const blocks: Block[] = [];
   const headingStack: { level: number; text: string }[] = [];
+  // Headings stay in the chunk text (prefixed to the next paragraph): when
+  // several small sections merge into one chunk, their headings must remain
+  // searchable — FAQ questions are often the strongest retrieval signal.
+  let pendingHeadings: string[] = [];
   let paragraph: string[] = [];
 
   const flushParagraph = (): void => {
-    const text = paragraph.join('\n').trim();
+    const body = paragraph.join('\n').trim();
     paragraph = [];
-    if (!text) return;
+    if (!body) return;
+    const text = [...pendingHeadings, body].join('\n\n');
+    pendingHeadings = [];
     blocks.push({ text, headingPath: headingStack.map((h) => h.text), tokens: countTokens(text) });
   };
 
@@ -52,6 +58,7 @@ function parseBlocks(content: string): Block[] {
         headingStack.pop();
       }
       headingStack.push({ level, text: heading[2]!.trim() });
+      pendingHeadings.push(`${heading[1]!} ${heading[2]!.trim()}`);
     } else if (line.trim() === '') {
       flushParagraph();
     } else {

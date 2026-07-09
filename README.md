@@ -12,7 +12,7 @@ single API that owns the OpenAI relationship.
 | `apps/dashboard`      | React admin dashboard (Phase 6, placeholder)                                        |
 | `packages/shared`     | zod schemas + API types shared across API, widget, dashboard                        |
 | `packages/widget`     | Embeddable web-component widget (Phase 4, placeholder)                              |
-| `wordpress-plugin`    | Content-sync companion plugin (Phase 5, placeholder)                                |
+| `wordpress-plugin`    | Content-sync companion plugin (`bellaworks-chat/`) + Docker dev env (`dev/`)        |
 | `supabase/migrations` | Database migrations (Supabase CLI)                                                  |
 | `test-pages`          | Static pages for exercising the API from a real browser                             |
 
@@ -62,6 +62,18 @@ Widget (Phase 4) — embed on any allowed domain with two tags:
 See it live: serve `test-pages/` (`python3 -m http.server 5173 --directory test-pages`)
 and open `http://localhost:5173/widget.html`. Theming is CSS variables — site
 owners can override any of them: `bellaworks-chat { --bw-primary: #7c3aed; }`.
+
+WordPress plugin (Phase 5) — install `wordpress-plugin/bellaworks-chat/`, enter
+API URL + client ID + `bw_sk_` key under Settings → Bellaworks Chat. Content
+(including ACF repeaters/flexible content — FAQ rows become their own chunks)
+pushes on save, reconciles daily, and the widget can be embedded with one
+checkbox. Local test site:
+
+```bash
+cd wordpress-plugin/dev
+docker compose up -d
+./setup.sh <bw_sk_key-from-seed>   # WP at http://localhost:8080 (admin/admin)
+```
 
 Or serve `test-pages/` (`python3 -m http.server 5173`) and open
 `http://localhost:5173/origin-check.html` for a real-browser test.

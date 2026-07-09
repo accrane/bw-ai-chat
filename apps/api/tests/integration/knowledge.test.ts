@@ -154,6 +154,17 @@ describe('ingest → process → search', () => {
     expect(surviving.length).toBeLessThan(after.rows.length);
   });
 
+  it('filters the document list by sourceType', async () => {
+    const markdown = await request(app)
+      .get('/v1/knowledge/documents?sourceType=markdown')
+      .set('Authorization', `Bearer ${keyA}`);
+    expect(markdown.body.total).toBeGreaterThan(0);
+    const wordpress = await request(app)
+      .get('/v1/knowledge/documents?sourceType=wordpress')
+      .set('Authorization', `Bearer ${keyA}`);
+    expect(wordpress.body.total).toBe(0);
+  });
+
   it('search returns relevant ranked chunks', async () => {
     const res = await request(app)
       .post('/v1/knowledge/search')

@@ -21,6 +21,7 @@ const IngestSchema = z.object({
 const ListQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).default(20),
   offset: z.coerce.number().int().min(0).default(0),
+  sourceType: z.enum(['manual', 'markdown', 'text', 'pdf', 'docx', 'wordpress']).optional(),
 });
 
 const SearchSchema = z.object({
@@ -71,10 +72,10 @@ knowledgeRouter.post(
 );
 
 knowledgeRouter.get('/documents', async (req: Request, res: Response) => {
-  const { limit, offset } = ListQuerySchema.parse(req.query);
+  const { limit, offset, sourceType } = ListQuerySchema.parse(req.query);
   const { clientId } = authedTenant(res);
   const { documents, total } = await withDbContext({ tenantId: clientId }, (db) =>
-    repo.listDocuments(db, limit, offset),
+    repo.listDocuments(db, limit, offset, sourceType),
   );
   const body: ListDocumentsResponse = { documents, total, limit, offset };
   res.json(body);
