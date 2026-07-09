@@ -132,8 +132,17 @@ class BW_Chat_Content_Extractor {
 				return ''; // layout/media settings, not knowledge
 
 			default:
-				$flat = self::flatten( $value );
-				return '' === $flat ? '' : ( $label ? "{$label}: {$flat}" : $flat );
+				$flat = self::flatten( $value, true );
+				if ( '' === $flat ) {
+					return '';
+				}
+				// A standalone text block (long textarea, multi-line content)
+				// becomes its own section like a wysiwyg field; short values
+				// stay inline as "Label: value".
+				if ( strlen( $flat ) > 120 || false !== strpos( $flat, "\n" ) ) {
+					return $label ? "## {$label}\n\n{$flat}" : $flat;
+				}
+				return $label ? "{$label}: {$flat}" : $flat;
 		}
 	}
 

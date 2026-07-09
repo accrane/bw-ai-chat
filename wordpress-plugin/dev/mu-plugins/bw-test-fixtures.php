@@ -13,6 +13,18 @@ add_action( 'acf/init', function () {
 		'title'    => 'FAQs',
 		'fields'   => array(
 			array(
+				'key'   => 'field_bw_intro',
+				'name'  => 'intro_text',
+				'label' => 'Intro',
+				'type'  => 'textarea',
+			),
+			array(
+				'key'   => 'field_bw_hours',
+				'name'  => 'office_hours',
+				'label' => 'Office hours',
+				'type'  => 'text',
+			),
+			array(
 				'key'        => 'field_bw_faqs',
 				'name'       => 'faqs',
 				'label'      => 'FAQs',
