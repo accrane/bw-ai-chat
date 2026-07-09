@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Inline widget embed demo</title>
+    <style>
+      body {
+        font-family: Georgia, serif;
+        max-width: 720px;
+        margin: 3rem auto;
+        padding: 0 1rem;
+        line-height: 1.7;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Frequently asked questions</h1>
+    <p>
+      This simulates an FAQ page where the site owner wrote their own intro copy and then placed the
+      chat inline (no floating bubble on this page).
+    </p>
+
+    <script src="http://localhost:3001/widget.js"></script>
+    <bellaworks-chat
+      client-id="whitewater"
+      inline
+      style="--bw-inline-height: 420px"
+    ></bellaworks-chat>
+
+    <p>More FAQ content continues below the chat panel…</p>
+  </body>
+</html>

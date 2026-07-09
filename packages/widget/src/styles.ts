@@ -19,6 +19,8 @@ export function hostVars(branding: Branding): string {
 export const baseStyles = `
 * { box-sizing: border-box; }
 
+:host([inline]) { display: block; }
+
 .root {
   font-family: var(--bw-font, system-ui, sans-serif);
   --surface: var(--bw-background, #ffffff);
@@ -57,26 +59,30 @@ export const baseStyles = `
 .root[data-position='bottom-left'] .launcher { left: 20px; }
 
 .panel {
+  background: var(--surface);
+  color: var(--text);
+  border-radius: var(--bw-radius, 12px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* floating mode: popup anchored above the launcher */
+.root[data-mode='floating'] .panel {
   position: fixed;
   bottom: 88px;
   width: 380px;
   max-width: calc(100vw - 32px);
   height: 560px;
   max-height: calc(100vh - 120px);
-  background: var(--surface);
-  color: var(--text);
-  border-radius: var(--bw-radius, 12px);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
   z-index: 2147483001;
 }
-.root[data-position='bottom-right'] .panel { right: 20px; }
-.root[data-position='bottom-left'] .panel { left: 20px; }
+.root[data-mode='floating'][data-position='bottom-right'] .panel { right: 20px; }
+.root[data-mode='floating'][data-position='bottom-left'] .panel { left: 20px; }
 
 @media (max-width: 480px) {
-  .panel {
+  .root[data-mode='floating'] .panel {
     inset: 0;
     width: 100%;
     height: 100%;
@@ -84,6 +90,13 @@ export const baseStyles = `
     max-height: none;
     border-radius: 0;
   }
+}
+
+/* inline mode: sits in the page flow, sized by its container */
+.root[data-mode='inline'] .panel {
+  width: 100%;
+  height: var(--bw-inline-height, 520px);
+  border: 1px solid var(--border);
 }
 
 .header {

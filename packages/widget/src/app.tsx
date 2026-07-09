@@ -23,10 +23,12 @@ export function App({
   clientId,
   apiBase,
   preview = false,
+  inline = false,
 }: {
   clientId: string;
   apiBase: string;
   preview?: boolean;
+  inline?: boolean;
 }) {
   const [config, setConfig] = useState<WidgetConfigResponse | null>(null);
 
@@ -41,7 +43,7 @@ export function App({
     <>
       <style>{baseStyles}</style>
       <style>{hostVars(config.branding)}</style>
-      <Widget clientId={clientId} apiBase={apiBase} config={config} />
+      <Widget clientId={clientId} apiBase={apiBase} config={config} inline={inline} />
     </>
   );
 }
@@ -62,16 +64,19 @@ function Widget({
   clientId,
   apiBase,
   config,
+  inline,
 }: {
   clientId: string;
   apiBase: string;
   config: WidgetConfigResponse;
+  inline: boolean;
 }) {
   const branding = config.branding;
   const theme = useTheme(branding.theme);
   const chat = useMemo(() => new ChatClient(apiBase, clientId), [apiBase, clientId]);
 
-  const [open, setOpen] = useState(false);
+  // inline mode has no launcher: the panel is always open, in document flow
+  const [open, setOpen] = useState(inline);
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState('');
   const [busy, setBusy] = useState(false);
@@ -96,9 +101,10 @@ function Widget({
   }, [open, chat]);
 
   useEffect(() => {
+    if (inline) return; // an embedded panel must not steal focus on page load
     if (open) inputRef.current?.focus();
     else launcherRef.current?.focus();
-  }, [open]);
+  }, [open, inline]);
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -142,23 +148,30 @@ function Widget({
   const name = branding.companyName ?? config.name;
 
   return (
-    <div class="root" data-theme={theme} data-position={branding.position}>
+    <div
+      class="root"
+      data-theme={theme}
+      data-position={branding.position}
+      data-mode={inline ? 'inline' : 'floating'}
+    >
       {open && (
         <div
           class="panel"
-          role="dialog"
-          aria-modal="true"
+          role={inline ? 'region' : 'dialog'}
+          aria-modal={inline ? undefined : true}
           aria-label={`${name} chat`}
-          onKeyDown={(e) => e.key === 'Escape' && setOpen(false)}
+          onKeyDown={(e) => !inline && e.key === 'Escape' && setOpen(false)}
         >
           <div class="header">
             {(branding.avatarUrl ?? branding.logoUrl) && (
               <img src={branding.avatarUrl ?? branding.logoUrl} alt="" />
             )}
             <span class="name">{name}</span>
-            <button class="close" aria-label="Close chat" onClick={() => setOpen(false)}>
-              <CloseIcon />
-            </button>
+            {!inline && (
+              <button class="close" aria-label="Close chat" onClick={() => setOpen(false)}>
+                <CloseIcon />
+              </button>
+            )}
           </div>
 
           <div class="messages" ref={scrollRef} aria-live="polite">
@@ -221,15 +234,17 @@ function Widget({
         </div>
       )}
 
-      <button
-        ref={launcherRef}
-        class="launcher"
-        aria-label={open ? 'Close chat' : `Chat with ${name}`}
-        aria-expanded={open}
-        onClick={() => setOpen((o) => !o)}
-      >
-        {open ? <CloseIcon /> : <ChatIcon />}
-      </button>
+      {!inline && (
+        <button
+          ref={launcherRef}
+          class="launcher"
+          aria-label={open ? 'Close chat' : `Chat with ${name}`}
+          aria-expanded={open}
+          onClick={() => setOpen((o) => !o)}
+        >
+          {open ? <CloseIcon /> : <ChatIcon />}
+        </button>
+      )}
     </div>
   );
 }

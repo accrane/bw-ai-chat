@@ -3,22 +3,57 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-/** Optionally injects the chat widget embed tags into the site footer. */
+/**
+ * Widget embedding: the optional site-wide floating bubble (wp_footer), and
+ * the [bellaworks_chat] shortcode for an inline chat panel placed anywhere in
+ * page content. The two are independent — a site can use either or both, and
+ * they share the visitor's conversation session.
+ */
 class BW_Chat_Widget_Embed {
 
+	private static $loader_printed = false;
+
 	public static function init() {
-		add_action( 'wp_footer', array( __CLASS__, 'render' ) );
+		add_action( 'wp_footer', array( __CLASS__, 'render_floating' ) );
+		add_shortcode( 'bellaworks_chat', array( __CLASS__, 'shortcode' ) );
 	}
 
-	public static function render() {
+	private static function loader_tag( $settings ) {
+		if ( self::$loader_printed ) {
+			return '';
+		}
+		self::$loader_printed = true;
+		// The loader itself also guards against double-loading.
+		return sprintf( '<script src="%s" async></script>', esc_url( $settings['api_url'] . '/widget.js' ) );
+	}
+
+	public static function render_floating() {
 		$s = BW_Chat_Settings::get();
 		if ( empty( $s['embed_widget'] ) || ! $s['api_url'] || ! $s['client_id'] ) {
 			return;
 		}
 		printf(
-			'<script src="%s" async></script><bellaworks-chat client-id="%s"></bellaworks-chat>',
-			esc_url( $s['api_url'] . '/widget.js' ),
+			'%s<bellaworks-chat client-id="%s"></bellaworks-chat>',
+			self::loader_tag( $s ), // phpcs:ignore WordPress.Security.EscapeOutput -- built from esc_url
 			esc_attr( $s['client_id'] )
+		);
+	}
+
+	/** [bellaworks_chat height="520px"] — inline chat panel in page content. */
+	public static function shortcode( $atts ) {
+		$s = BW_Chat_Settings::get();
+		if ( ! $s['api_url'] || ! $s['client_id'] ) {
+			return current_user_can( 'manage_options' )
+				? '<p><em>Bellaworks Chat: configure the API URL and Client ID under Settings → Bellaworks Chat.</em></p>'
+				: '';
+		}
+		$atts   = shortcode_atts( array( 'height' => '' ), $atts, 'bellaworks_chat' );
+		$height = preg_match( '/^\d+(px|rem|em|vh|%)$/', (string) $atts['height'] ) ? $atts['height'] : '';
+		return sprintf(
+			'%s<bellaworks-chat client-id="%s" inline%s></bellaworks-chat>',
+			self::loader_tag( $s ), // phpcs:ignore WordPress.Security.EscapeOutput -- built from esc_url
+			esc_attr( $s['client_id'] ),
+			$height ? ' style="--bw-inline-height:' . esc_attr( $height ) . '"' : ''
 		);
 	}
 }

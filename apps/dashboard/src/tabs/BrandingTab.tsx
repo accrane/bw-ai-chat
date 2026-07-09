@@ -20,6 +20,59 @@ declare global {
   }
 }
 
+function Snippet({ label, code }: { label: string; code: string }) {
+  const [copied, setCopied] = useState(false);
+  return (
+    <div>
+      <div className="mb-1 flex items-center justify-between">
+        <span className="text-xs font-medium text-slate-500">{label}</span>
+        <button
+          type="button"
+          className="text-xs text-slate-400 underline hover:text-slate-600"
+          onClick={() => {
+            void navigator.clipboard.writeText(code);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 1500);
+          }}
+        >
+          {copied ? 'Copied!' : 'Copy'}
+        </button>
+      </div>
+      <pre className="overflow-x-auto rounded bg-slate-50 p-2 font-mono text-xs text-slate-700">
+        {code}
+      </pre>
+    </div>
+  );
+}
+
+function EmbedSnippets({ slug }: { slug: string }) {
+  const origin = API_ORIGIN;
+  return (
+    <Card title="Embed">
+      <div className="space-y-4">
+        <Snippet
+          label="Floating bubble (any website)"
+          code={`<script src="${origin}/widget.js" async></script>\n<bellaworks-chat client-id="${slug}"></bellaworks-chat>`}
+        />
+        <Snippet
+          label="Inline panel (renders open, inside your page — e.g. an FAQ page)"
+          code={`<script src="${origin}/widget.js" async></script>\n<bellaworks-chat client-id="${slug}" inline></bellaworks-chat>`}
+        />
+        <Snippet
+          label="WordPress (with the Bellaworks Chat plugin): inline shortcode"
+          code="[bellaworks_chat]"
+        />
+        <p className="text-xs text-slate-400">
+          Inline height defaults to 520px — override with{' '}
+          <code>style=&quot;--bw-inline-height: 600px&quot;</code> or the shortcode&apos;s{' '}
+          <code>height</code> attribute. Floating and inline can be used together; they share the
+          visitor&apos;s conversation.
+        </p>
+      </div>
+    </Card>
+  );
+}
+
 function WidgetPreview({ slug, version }: { slug: string; version: number }) {
   const [scriptReady, setScriptReady] = useState(false);
   useEffect(() => {
@@ -159,6 +212,8 @@ export function BrandingTab({ client }: { client: ClientDetail }) {
           The live widget (bottom corner of this page) reloads with saved branding.
         </span>
       </div>
+
+      <EmbedSnippets slug={client.slug} />
 
       <WidgetPreview slug={client.slug} version={version} />
     </form>

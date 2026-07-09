@@ -117,8 +117,19 @@ class BW_Chat_Settings {
 						<td>
 							<label>
 								<input type="checkbox" name="<?php echo esc_attr( self::OPTION ); ?>[embed_widget]" value="1" <?php checked( $s['embed_widget'] ); ?> />
-								Show the chat widget on this site
+								Show the floating chat bubble site-wide
 							</label>
+							<p style="margin-top:8px">
+								To place the chat inline on a specific page instead (or additionally),
+								paste this shortcode into the page content:
+							</p>
+							<p>
+								<code id="bw-chat-shortcode">[bellaworks_chat]</code>
+								<button type="button" class="button button-small" onclick="navigator.clipboard.writeText('[bellaworks_chat]');this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',1500)">Copy</button>
+							</p>
+							<p class="description">
+								Optional height: <code>[bellaworks_chat height="600px"]</code>
+							</p>
 						</td>
 					</tr>
 				</table>
