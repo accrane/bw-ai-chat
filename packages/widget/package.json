@@ -1,0 +1,23 @@
+{
+  "name": "@bellaworks/widget",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:unit": "vitest run"
+  },
+  "dependencies": {
+    "@bellaworks/shared": "workspace:*",
+    "preact": "^10.25.0"
+  },
+  "devDependencies": {
+    "happy-dom": "^15.11.0",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.0",
+    "vitest": "^3.0.0"
+  }
+}

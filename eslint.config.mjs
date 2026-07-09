@@ -16,4 +16,16 @@ export default tseslint.config(
       '@typescript-eslint/consistent-type-imports': 'error',
     },
   },
+  {
+    // plain-JS browser loader served as a static asset
+    files: ['packages/widget/public/**/*.js'],
+    languageOptions: {
+      globals: { window: 'readonly', document: 'readonly', URL: 'readonly' },
+    },
+  },
+  {
+    // \x00 sentinels are the point (see renderMarkdown)
+    files: ['packages/widget/src/markdown.ts'],
+    rules: { 'no-control-regex': 'off' },
+  },
 );

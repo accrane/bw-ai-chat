@@ -47,10 +47,21 @@ curl -X POST http://localhost:3001/v1/knowledge/search \
   -d '{"query": "how do refunds work?"}'
 ```
 
-Without `OPENAI_API_KEY` in `apps/api/.env`, a deterministic offline embeddings
-provider is used (similarity = lexical overlap); set a key for real semantic
-search. Ingestion runs through pg-boss background jobs — check document
-`status` via `GET /v1/knowledge/documents`.
+Without `OPENAI_API_KEY` in `apps/api/.env`, deterministic offline providers
+are used for embeddings and chat (grounded but canned answers); set a key for
+real semantic search + GPT responses. Ingestion runs through pg-boss
+background jobs — check document `status` via `GET /v1/knowledge/documents`.
+
+Widget (Phase 4) — embed on any allowed domain with two tags:
+
+```html
+<script src="http://localhost:3001/widget.js"></script>
+<bellaworks-chat client-id="whitewater"></bellaworks-chat>
+```
+
+See it live: serve `test-pages/` (`python3 -m http.server 5173 --directory test-pages`)
+and open `http://localhost:5173/widget.html`. Theming is CSS variables — site
+owners can override any of them: `bellaworks-chat { --bw-primary: #7c3aed; }`.
 
 Or serve `test-pages/` (`python3 -m http.server 5173`) and open
 `http://localhost:5173/origin-check.html` for a real-browser test.

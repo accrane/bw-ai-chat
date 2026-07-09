@@ -1,4 +1,7 @@
 import { randomUUID } from 'node:crypto';
+import { existsSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import express from 'express';
 import { pinoHttp } from 'pino-http';
 import { appPool } from './db/pool.js';
@@ -41,6 +44,18 @@ export function createApp(): express.Express {
   app.use('/v1/widget', widgetRouter);
   app.use('/v1/knowledge', knowledgeRouter);
   app.use('/v1/chat', chatRouter);
+
+  // Embeddable widget assets (CDN takes over in Phase 8). The loader URL is
+  // the permanent embed contract, so it gets a short cache; versioned bundles
+  // are immutable.
+  const widgetDist = fileURLToPath(new URL('../../../packages/widget/dist/', import.meta.url));
+  if (existsSync(widgetDist)) {
+    app.get('/widget.js', (_req, res) => {
+      res.setHeader('Cache-Control', 'public, max-age=300');
+      res.sendFile(path.join(widgetDist, 'widget.js'));
+    });
+    app.use('/widget', express.static(widgetDist, { immutable: true, maxAge: '365d' }));
+  }
 
   app.use((req, _res, next) =>
     next(notFound('not_found', `No route for ${req.method} ${req.path}`)),

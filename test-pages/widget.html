@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Acme Rafting — widget embed demo</title>
+    <style>
+      body {
+        font-family: Georgia, serif;
+        max-width: 720px;
+        margin: 3rem auto;
+        padding: 0 1rem;
+        line-height: 1.7;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+      /* Site owners can override widget theming in plain CSS: */
+      /* bellaworks-chat { --bw-primary: #7c3aed; } */
+    </style>
+  </head>
+  <body>
+    <h1>Whitewater Rafting Co.</h1>
+    <p>
+      This page simulates a client website. The only Bellaworks integration is the two tags at the
+      bottom of this file — script loader plus the custom element. The floating chat bubble in the
+      corner is fully isolated in Shadow DOM.
+    </p>
+    <p>
+      Try asking: “how much is a full-day trip?” or “what should I bring?” or “how do refunds work?”
+    </p>
+
+    <script src="http://localhost:3001/widget.js"></script>
+    <bellaworks-chat client-id="whitewater"></bellaworks-chat>
+  </body>
+</html>
