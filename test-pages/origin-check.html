@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Bellaworks widget API — origin check test page</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        max-width: 720px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+      pre {
+        background: #f3f4f6;
+        padding: 1rem;
+        border-radius: 8px;
+        overflow-x: auto;
+      }
+      button {
+        padding: 0.5rem 1rem;
+        margin-right: 0.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Widget API test page</h1>
+    <p>
+      Serve this page from an allowed domain (e.g. <code>python3 -m http.server 5173</code> →
+      <code>http://localhost:5173/origin-check.html</code>; the seeded client allows
+      <code>localhost</code>). The browser sends the real <code>Origin</code> header, so this proves
+      domain validation end to end.
+    </p>
+    <p>
+      <button id="config">Fetch config</button>
+      <button id="session">Mint session</button>
+    </p>
+    <pre id="out">—</pre>
+    <script>
+      const API = 'http://localhost:3001/v1/widget/whitewater';
+      const out = document.getElementById('out');
+      const show = (data) => (out.textContent = JSON.stringify(data, null, 2));
+      const fail = (err) => (out.textContent = 'Request failed: ' + err);
+
+      document.getElementById('config').addEventListener('click', () =>
+        fetch(`${API}/config`)
+          .then((r) => r.json())
+          .then(show)
+          .catch(fail),
+      );
+      document.getElementById('session').addEventListener('click', () =>
+        fetch(`${API}/session`, { method: 'POST' })
+          .then((r) => r.json())
+          .then(show)
+          .catch(fail),
+      );
+    </script>
+  </body>
+</html>

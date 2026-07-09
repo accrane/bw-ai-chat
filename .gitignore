@@ -1,0 +1,17 @@
+node_modules/
+dist/
+coverage/
+*.log
+.DS_Store
+
+# environment files (checked-in examples only)
+.env
+.env.local
+.env.*.local
+
+# machine-local Claude Code permissions
+.claude/settings.local.json
+
+# supabase local artifacts
+supabase/.temp/
+supabase/.branches/

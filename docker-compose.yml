@@ -1,0 +1,19 @@
+# Runs the API in a container against the host's Supabase local stack
+# (`pnpm db:start`). Day-to-day development uses `pnpm dev` instead; this
+# exists to verify the container builds and runs.
+services:
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    ports:
+      - '3001:3001'
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      LOG_LEVEL: info
+      DATABASE_URL: postgresql://postgres:postgres@host.docker.internal:54322/postgres
+      APP_DATABASE_URL: postgresql://app_api:${APP_DB_PASSWORD:-app_api_dev_password}@host.docker.internal:54322/postgres
+      SESSION_JWT_SECRET: ${SESSION_JWT_SECRET:?set SESSION_JWT_SECRET}
+    extra_hosts:
+      - host.docker.internal:host-gateway
