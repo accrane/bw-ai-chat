@@ -111,3 +111,11 @@ proving cross-tenant reads are impossible even for unfiltered queries.
   go through an `EmbeddingsProvider` interface (OpenAI or offline fake).
   Processing runs in pg-boss jobs under the same tenant-scoped RLS context as
   requests.
+
+## Deployment (Phase 8)
+
+Production runs on the existing Hostinger VPS next to n8n: the API + Postgres
+(pgvector) via `deploy/docker-compose.yml`, routed by n8n's Traefik at
+`chat.bellaworksweb.com` with nightly rotated `pg_dump` backups. Pushing to
+`main` builds the image (GHCR) and deploys over SSH. Full runbook: see
+[DEPLOY.md](DEPLOY.md).

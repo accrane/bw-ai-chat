@@ -61,7 +61,9 @@ export function createApp(): express.Express {
   // Embeddable widget assets (CDN takes over in Phase 8). The loader URL is
   // the permanent embed contract, so it gets a short cache; versioned bundles
   // are immutable.
-  const widgetDist = fileURLToPath(new URL('../../../packages/widget/dist/', import.meta.url));
+  const widgetDist =
+    env.WIDGET_DIST_DIR ??
+    fileURLToPath(new URL('../../../packages/widget/dist/', import.meta.url));
   if (existsSync(widgetDist)) {
     app.get('/widget.js', (_req, res) => {
       res.setHeader('Cache-Control', 'public, max-age=300');
@@ -81,7 +83,8 @@ export function createApp(): express.Express {
   }
 
   // Built admin dashboard (during development it runs on Vite at :5174).
-  const dashboardDist = fileURLToPath(new URL('../../dashboard/dist/', import.meta.url));
+  const dashboardDist =
+    env.DASHBOARD_DIST_DIR ?? fileURLToPath(new URL('../../dashboard/dist/', import.meta.url));
   if (existsSync(dashboardDist)) {
     app.use('/admin', express.static(dashboardDist));
     app.get('/admin/{*any}', (_req, res) => res.sendFile(path.join(dashboardDist, 'index.html')));

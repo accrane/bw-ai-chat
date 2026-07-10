@@ -14,6 +14,10 @@ const EnvSchema = z.object({
   SECRETS_KEY: z.string().min(1).optional(),
   ADMIN_JWT_SECRET: z.string().min(32, 'ADMIN_JWT_SECRET must be at least 32 characters'),
   DASHBOARD_ORIGIN: z.string().url().optional(),
+  // Compiled output sits at a different depth than src/, so the Docker image
+  // sets these explicitly instead of relying on repo-relative fallbacks.
+  WIDGET_DIST_DIR: z.string().min(1).optional(),
+  DASHBOARD_DIST_DIR: z.string().min(1).optional(),
 });
 
 const parsed = EnvSchema.safeParse(process.env);

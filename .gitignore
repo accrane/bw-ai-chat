@@ -15,3 +15,6 @@ coverage/
 # supabase local artifacts
 supabase/.temp/
 supabase/.branches/
+
+# production deploy artifacts (VPS-local)
+deploy/backups/

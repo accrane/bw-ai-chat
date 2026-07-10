@@ -1,0 +1,89 @@
+# Production stack for the Hostinger VPS that already runs n8n + Traefik.
+# Traefik (from the n8n compose project) owns ports 80/443; our api container
+# joins its docker network and registers a router via labels — no ports are
+# published on the host. See DEPLOY.md for the full runbook.
+#
+# Copy .env.example to .env alongside this file and fill in every value.
+
+services:
+  api:
+    image: ${API_IMAGE:?set API_IMAGE in .env}
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/postgres
+      APP_DATABASE_URL: postgresql://app_api:${APP_DB_PASSWORD}@db:5432/postgres
+      APP_DB_PASSWORD: ${APP_DB_PASSWORD}
+      SESSION_JWT_SECRET: ${SESSION_JWT_SECRET}
+      ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET}
+      SECRETS_KEY: ${SECRETS_KEY}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      EMBEDDINGS_PROVIDER: openai
+      LLM_PROVIDER: openai
+      DASHBOARD_ORIGIN: https://${CHAT_DOMAIN}
+    networks:
+      - internal
+      - traefik
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=n8n_default
+      - traefik.http.routers.bwchat.rule=Host(`${CHAT_DOMAIN}`)
+      - traefik.http.routers.bwchat.entrypoints=web,websecure
+      - traefik.http.routers.bwchat.tls=true
+      - traefik.http.routers.bwchat.tls.certresolver=mytlschallenge
+      - traefik.http.routers.bwchat.middlewares=bwchat@docker
+      - traefik.http.services.bwchat.loadbalancer.server.port=3001
+      - traefik.http.middlewares.bwchat.headers.SSLRedirect=true
+      - traefik.http.middlewares.bwchat.headers.STSSeconds=315360000
+      - traefik.http.middlewares.bwchat.headers.forceSTSHeader=true
+
+  db:
+    image: pgvector/pgvector:pg17
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - internal
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Nightly pg_dump with rotation. Dumps land in ./backups on the host so any
+  # VPS-level backup (Hostinger snapshots, rclone offsite) picks them up.
+  db-backup:
+    image: prodrigestivill/postgres-backup-local:17-alpine
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      SCHEDULE: '@daily'
+      BACKUP_KEEP_DAYS: '7'
+      BACKUP_KEEP_WEEKS: '4'
+      BACKUP_KEEP_MONTHS: '3'
+      HEALTHCHECK_PORT: '8080'
+    volumes:
+      - ./backups:/backups
+    networks:
+      - internal
+
+networks:
+  internal:
+  traefik:
+    name: n8n_default
+    external: true
+
+volumes:
+  db-data:
