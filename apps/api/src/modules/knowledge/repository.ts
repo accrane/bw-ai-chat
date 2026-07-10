@@ -4,7 +4,7 @@ import type {
   KnowledgeDocument,
   SearchResult,
   SourceType,
-} from '@bellaworks/shared';
+} from '@bw-ai-chat/shared';
 import type { DocumentChunk } from './chunker.js';
 
 /**

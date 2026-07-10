@@ -1,7 +1,7 @@
 import { Router, type Request, type Response } from 'express';
 import multer from 'multer';
 import { z } from 'zod';
-import type { IngestResponse, ListDocumentsResponse, SearchResponse } from '@bellaworks/shared';
+import type { IngestResponse, ListDocumentsResponse, SearchResponse } from '@bw-ai-chat/shared';
 import { withDbContext } from '../../db/context.js';
 import { badRequest, notFound } from '../../lib/errors.js';
 import { apiKeyAuth, authedTenant } from '../../middleware/api-key-auth.js';

@@ -1,8 +1,8 @@
-import type { Branding } from '@bellaworks/shared';
+import type { Branding } from '@bw-ai-chat/shared';
 
 /**
  * Theming contract: branding from the API becomes --bw-* defaults on :host.
- * Rules the host page writes against the element (bellaworks-chat { --bw-*: … })
+ * Rules the host page writes against the element (bw-ai-chat { --bw-*: … })
  * outrank :host styles, so site owners can override any variable in plain CSS.
  */
 export function hostVars(branding: Branding): string {

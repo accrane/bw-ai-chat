@@ -3,7 +3,7 @@ import {
   BrandingSchema,
   type AiSettings,
   type Branding,
-} from '@bellaworks/shared';
+} from '@bw-ai-chat/shared';
 import { adminPool } from '../../db/pool.js';
 import { withDbContext } from '../../db/context.js';
 

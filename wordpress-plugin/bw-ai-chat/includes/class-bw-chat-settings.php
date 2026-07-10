@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Options + the Settings → Bellaworks Chat admin page.
+ * Options + the Settings → BW AI Chat admin page.
  */
 class BW_Chat_Settings {
 
@@ -35,8 +35,8 @@ class BW_Chat_Settings {
 
 	public static function admin_menu() {
 		add_options_page(
-			'Bellaworks Chat',
-			'Bellaworks Chat',
+			'BW AI Chat',
+			'BW AI Chat',
 			'manage_options',
 			'bw-chat',
 			array( __CLASS__, 'render_page' )
@@ -77,7 +77,7 @@ class BW_Chat_Settings {
 		$is_error = ! empty( $_GET['bw_error'] ) && '1' === $_GET['bw_error']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		?>
 		<div class="wrap">
-			<h1>Bellaworks Chat</h1>
+			<h1>BW AI Chat</h1>
 			<?php if ( $notice ) : ?>
 				<div class="notice <?php echo $is_error ? 'notice-error' : 'notice-success'; ?> is-dismissible">
 					<p><?php echo esc_html( $notice ); ?></p>
@@ -132,11 +132,11 @@ class BW_Chat_Settings {
 								paste this shortcode into the page content:
 							</p>
 							<p>
-								<code id="bw-chat-shortcode">[bellaworks_chat]</code>
-								<button type="button" class="button button-small" onclick="navigator.clipboard.writeText('[bellaworks_chat]');this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',1500)">Copy</button>
+								<code id="bw-chat-shortcode">[bw_ai_chat]</code>
+								<button type="button" class="button button-small" onclick="navigator.clipboard.writeText('[bw_ai_chat]');this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',1500)">Copy</button>
 							</p>
 							<p class="description">
-								Optional height: <code>[bellaworks_chat height="600px"]</code>
+								Optional height: <code>[bw_ai_chat height="600px"]</code>
 							</p>
 						</td>
 					</tr>

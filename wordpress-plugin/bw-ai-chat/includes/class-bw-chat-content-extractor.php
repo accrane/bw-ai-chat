@@ -40,7 +40,7 @@ class BW_Chat_Content_Extractor {
 		 * @param string  $content Markdown-ish text about to be synced.
 		 * @param WP_Post $post    The post being synced.
 		 */
-		$content = apply_filters( 'bellaworks_chat_post_content', $content, $post );
+		$content = apply_filters( 'bw_ai_chat_post_content', $content, $post );
 
 		return array(
 			'title'   => html_entity_decode( get_the_title( $post ), ENT_QUOTES ),

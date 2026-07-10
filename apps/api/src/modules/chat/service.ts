@@ -6,7 +6,7 @@ import type {
   ChatSourcesEvent,
   ChatSource,
   ConversationResponse,
-} from '@bellaworks/shared';
+} from '@bw-ai-chat/shared';
 import { withDbContext } from '../../db/context.js';
 import { getLLMProvider } from '../../lib/llm.js';
 import { logger } from '../../lib/logger.js';

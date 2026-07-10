@@ -1,5 +1,5 @@
 import { createHash, randomUUID } from 'node:crypto';
-import type { IngestResponse, SearchResult, SourceType } from '@bellaworks/shared';
+import type { IngestResponse, SearchResult, SourceType } from '@bw-ai-chat/shared';
 import { withDbContext } from '../../db/context.js';
 import { getEmbeddingsProvider } from '../../lib/embeddings.js';
 import { logger } from '../../lib/logger.js';

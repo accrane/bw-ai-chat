@@ -4,7 +4,7 @@
  * stays out of the measurement). Reports throughput and latency percentiles —
  * run before deployment changes to catch regressions.
  *
- *   pnpm --filter @bellaworks/api exec tsx scripts/load-baseline.ts
+ *   pnpm --filter @bw-ai-chat/api exec tsx scripts/load-baseline.ts
  */
 const API = process.env.LOAD_API ?? 'http://localhost:3001';
 const SLUG = process.env.LOAD_SLUG ?? 'whitewater';

@@ -1,4 +1,4 @@
-import type { SearchResult } from '@bellaworks/shared';
+import type { SearchResult } from '@bw-ai-chat/shared';
 import type { LLMChatMessage } from '../../lib/llm.js';
 
 /**

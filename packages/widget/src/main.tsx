@@ -12,12 +12,12 @@ const SCRIPT_ORIGIN = (() => {
   }
 })();
 
-class BellaworksChatElement extends HTMLElement {
+class BwAiChatElement extends HTMLElement {
   connectedCallback(): void {
     if (this.shadowRoot) return;
     const clientId = this.getAttribute('client-id');
     if (!clientId) {
-      console.warn('[bellaworks-chat] missing client-id attribute');
+      console.warn('[bw-ai-chat] missing client-id attribute');
       return;
     }
     const apiBase = this.getAttribute('api-url') ?? SCRIPT_ORIGIN;
@@ -34,6 +34,6 @@ class BellaworksChatElement extends HTMLElement {
   }
 }
 
-if (!customElements.get('bellaworks-chat')) {
-  customElements.define('bellaworks-chat', BellaworksChatElement);
+if (!customElements.get('bw-ai-chat')) {
+  customElements.define('bw-ai-chat', BwAiChatElement);
 }

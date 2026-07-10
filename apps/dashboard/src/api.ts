@@ -1,4 +1,4 @@
-import type { AiSettings, Branding, KnowledgeDocument } from '@bellaworks/shared';
+import type { AiSettings, Branding, KnowledgeDocument } from '@bw-ai-chat/shared';
 
 export class ApiError extends Error {
   constructor(

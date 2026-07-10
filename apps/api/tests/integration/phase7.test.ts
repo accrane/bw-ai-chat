@@ -10,7 +10,7 @@ import { createTestClient, deleteTestClient, type TestClient } from './helpers.j
 
 const app = createApp();
 const ORIGIN = 'https://example.com';
-const email = `admin-${randomUUID().slice(0, 8)}@bellaworks.test`;
+const email = `admin-${randomUUID().slice(0, 8)}@bw-ai-chat.test`;
 
 let client: TestClient;
 let cookie: string;

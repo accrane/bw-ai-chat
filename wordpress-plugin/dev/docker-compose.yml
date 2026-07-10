@@ -25,7 +25,7 @@ services:
       WORDPRESS_DB_PASSWORD: wp
     volumes:
       - wp_data:/var/www/html
-      - ../bellaworks-chat:/var/www/html/wp-content/plugins/bellaworks-chat
+      - ../bw-ai-chat:/var/www/html/wp-content/plugins/bw-ai-chat
       - ./mu-plugins:/var/www/html/wp-content/mu-plugins
     extra_hosts:
       - host.docker.internal:host-gateway
@@ -42,7 +42,7 @@ services:
       WORDPRESS_DB_PASSWORD: wp
     volumes:
       - wp_data:/var/www/html
-      - ../bellaworks-chat:/var/www/html/wp-content/plugins/bellaworks-chat
+      - ../bw-ai-chat:/var/www/html/wp-content/plugins/bw-ai-chat
       - ./mu-plugins:/var/www/html/wp-content/mu-plugins
     extra_hosts:
       - host.docker.internal:host-gateway

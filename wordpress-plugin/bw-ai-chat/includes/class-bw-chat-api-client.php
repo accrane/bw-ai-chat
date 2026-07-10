@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Thin wrapper over the Bellaworks knowledge API. Server-to-server only; the
+ * Thin wrapper over the BW AI Chat knowledge API. Server-to-server only; the
  * API key never reaches the browser.
  */
 class BW_Chat_API_Client {

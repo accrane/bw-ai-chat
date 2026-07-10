@@ -1,5 +1,5 @@
 {
-  "name": "@bellaworks/api",
+  "name": "@bw-ai-chat/api",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -16,7 +16,7 @@
     "db:role": "tsx scripts/db-role.ts"
   },
   "dependencies": {
-    "@bellaworks/shared": "workspace:*",
+    "@bw-ai-chat/shared": "workspace:*",
     "dotenv": "^16.4.0",
     "express": "^5.1.0",
     "gpt-tokenizer": "^3.4.0",

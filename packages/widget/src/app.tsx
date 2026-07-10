@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import type { Branding, ChatSource, WidgetConfigResponse } from '@bellaworks/shared';
+import type { Branding, ChatSource, WidgetConfigResponse } from '@bw-ai-chat/shared';
 import { ChatClient, fetchConfig } from './api.js';
 import { ChatIcon, CloseIcon, SendIcon, ThumbIcon } from './icons.js';
 import { renderMarkdown } from './markdown.js';
@@ -39,7 +39,7 @@ export function App({
   useEffect(() => {
     fetchConfig(apiBase, clientId, preview)
       .then(setConfig)
-      .catch((err) => console.warn('[bellaworks-chat] disabled:', err));
+      .catch((err) => console.warn('[bw-ai-chat] disabled:', err));
   }, [apiBase, clientId, preview]);
 
   if (!config) return null;
@@ -260,7 +260,7 @@ function Widget({
           </form>
           {/* missing field (config cached before an update) must default to shown */}
           {branding.showCredit !== false && (
-            <div class="credit">{branding.creditText ?? 'Powered by Bellaworks'}</div>
+            <div class="credit">{branding.creditText ?? 'Powered by BW AI Chat'}</div>
           )}
         </div>
       )}

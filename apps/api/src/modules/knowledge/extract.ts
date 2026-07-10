@@ -1,6 +1,6 @@
 import mammoth from 'mammoth';
 import { PDFParse } from 'pdf-parse';
-import type { SourceType } from '@bellaworks/shared';
+import type { SourceType } from '@bw-ai-chat/shared';
 import { badRequest } from '../../lib/errors.js';
 
 /**

@@ -9,11 +9,11 @@ COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
 COPY packages/shared/package.json packages/shared/
 COPY apps/api/package.json apps/api/
 
-RUN pnpm install --frozen-lockfile --filter @bellaworks/api...
+RUN pnpm install --frozen-lockfile --filter @bw-ai-chat/api...
 
 COPY packages/shared packages/shared
 COPY apps/api apps/api
-RUN pnpm --filter @bellaworks/shared build
+RUN pnpm --filter @bw-ai-chat/shared build
 
 EXPOSE 3001
-CMD ["pnpm", "--filter", "@bellaworks/api", "start"]
+CMD ["pnpm", "--filter", "@bw-ai-chat/api", "start"]

@@ -1,5 +1,5 @@
 import { Router, type Request, type Response } from 'express';
-import type { WidgetConfigResponse, WidgetSessionResponse } from '@bellaworks/shared';
+import type { WidgetConfigResponse, WidgetSessionResponse } from '@bw-ai-chat/shared';
 import { env } from '../../config/env.js';
 import { newSessionId } from '../../lib/crypto.js';
 import { signSessionToken } from '../../lib/session-token.js';

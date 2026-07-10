@@ -1,6 +1,6 @@
 import { Router, type Request, type Response } from 'express';
 import { z } from 'zod';
-import type { ChatErrorEvent } from '@bellaworks/shared';
+import type { ChatErrorEvent } from '@bw-ai-chat/shared';
 import { withDbContext } from '../../db/context.js';
 import { HttpError, notFound } from '../../lib/errors.js';
 import * as chatRepo from './repository.js';

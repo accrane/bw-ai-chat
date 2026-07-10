@@ -1,4 +1,4 @@
-# Bellaworks AI Chat Platform
+# BW AI Chat Platform
 
 Multi-tenant AI chat platform: each client gets an isolated knowledge base,
 branding, AI settings, analytics, and an embeddable widget, all served from a
@@ -12,7 +12,7 @@ single API that owns the OpenAI relationship.
 | `apps/dashboard`      | React admin dashboard (Phase 6, placeholder)                                        |
 | `packages/shared`     | zod schemas + API types shared across API, widget, dashboard                        |
 | `packages/widget`     | Embeddable web-component widget (Phase 4, placeholder)                              |
-| `wordpress-plugin`    | Content-sync companion plugin (`bellaworks-chat/`) + Docker dev env (`dev/`)        |
+| `wordpress-plugin`    | Content-sync companion plugin (`bw-ai-chat/`) + Docker dev env (`dev/`)        |
 | `supabase/migrations` | Database migrations (Supabase CLI)                                                  |
 | `test-pages`          | Static pages for exercising the API from a real browser                             |
 
@@ -56,15 +56,15 @@ Widget (Phase 4) — embed on any allowed domain with two tags:
 
 ```html
 <script src="http://localhost:3001/widget.js"></script>
-<bellaworks-chat client-id="whitewater"></bellaworks-chat>
+<bw-ai-chat client-id="whitewater"></bw-ai-chat>
 ```
 
 See it live: serve `test-pages/` (`python3 -m http.server 5173 --directory test-pages`)
 and open `http://localhost:5173/widget.html`. Theming is CSS variables — site
-owners can override any of them: `bellaworks-chat { --bw-primary: #7c3aed; }`.
+owners can override any of them: `bw-ai-chat { --bw-primary: #7c3aed; }`.
 
-WordPress plugin (Phase 5) — install `wordpress-plugin/bellaworks-chat/`, enter
-API URL + client ID + `bw_sk_` key under Settings → Bellaworks Chat. Content
+WordPress plugin (Phase 5) — install `wordpress-plugin/bw-ai-chat/`, enter
+API URL + client ID + `bw_sk_` key under Settings → BW AI Chat. Content
 (including ACF repeaters/flexible content — FAQ rows become their own chunks)
 pushes on save, reconciles daily, and the widget can be embedded with one
 checkbox. Local test site:
@@ -82,7 +82,7 @@ Or serve `test-pages/` (`python3 -m http.server 5173`) and open
 
 ```bash
 pnpm test:unit                              # no database needed (runs in CI)
-pnpm --filter @bellaworks/api test:integration   # needs db:start + db:role
+pnpm --filter @bw-ai-chat/api test:integration   # needs db:start + db:role
 ```
 
 Integration tests create their own throwaway clients and include an RLS suite

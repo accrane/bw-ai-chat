@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Installs WordPress + ACF, activates the Bellaworks Chat plugin, and seeds an
+# Installs WordPress + ACF, activates the BW AI Chat plugin, and seeds an
 # FAQ page with an ACF repeater. Usage: ./setup.sh <bw_sk_api_key>
 set -euo pipefail
 
@@ -18,7 +18,7 @@ if ! WP core is-installed 2>/dev/null; then
 fi
 
 WP plugin install advanced-custom-fields --activate 2>/dev/null || WP plugin activate advanced-custom-fields
-WP plugin activate bellaworks-chat
+WP plugin activate bw-ai-chat
 
 WP option update bw_chat_settings --format=json "$(cat <<JSON
 {

@@ -1,7 +1,7 @@
 <?php
 /**
- * Plugin Name: Bellaworks Chat
- * Description: Syncs site content (including ACF fields) to the Bellaworks AI chat platform and optionally embeds the chat widget.
+ * Plugin Name: BW AI Chat
+ * Description: Syncs site content (including ACF fields) to the BW AI Chat platform and optionally embeds the chat widget.
  * Version: 0.1.0
  * Author: Bellaworks Web Design
  * License: GPL-2.0-or-later

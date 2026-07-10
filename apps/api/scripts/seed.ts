@@ -2,7 +2,7 @@
  * Seeds the demo "whitewater" client (idempotent) and prints a secret API key
  * on first run. Uses the privileged connection — seeding is admin work.
  */
-import { AiSettingsSchema, BrandingSchema } from '@bellaworks/shared';
+import { AiSettingsSchema, BrandingSchema } from '@bw-ai-chat/shared';
 import { adminPool } from '../src/db/pool.js';
 import { generateApiKey } from '../src/lib/crypto.js';
 

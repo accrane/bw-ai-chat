@@ -12,7 +12,7 @@ await registerMaintenance();
 
 const app = createApp();
 const server = app.listen(env.PORT, () => {
-  logger.info({ port: env.PORT, env: env.NODE_ENV }, 'bellaworks api listening');
+  logger.info({ port: env.PORT, env: env.NODE_ENV }, 'bw-ai-chat api listening');
 });
 
 async function shutdown(signal: string): Promise<void> {

@@ -1,4 +1,4 @@
-=== Bellaworks Chat ===
+=== BW AI Chat ===
 Contributors: bellaworks
 Requires at least: 6.0
 Tested up to: 6.7
@@ -6,11 +6,11 @@ Requires PHP: 8.0
 Stable tag: 0.1.0
 License: GPL-2.0-or-later
 
-Syncs site content to the Bellaworks AI chat platform and optionally embeds the chat widget.
+Syncs site content to the BW AI Chat platform and optionally embeds the chat widget.
 
 == Description ==
 
-WordPress publishes content; all AI processing happens on the Bellaworks platform.
+WordPress publishes content; all AI processing happens on the BW AI Chat platform.
 
 * Pushes pages/posts (and selected public post types) on save, in rendered form.
 * Advanced Custom Fields support: text/textarea/wysiwyg fields, groups, flexible
@@ -25,9 +25,9 @@ WordPress publishes content; all AI processing happens on the Bellaworks platfor
 * Optional one-checkbox embed of the chat widget in the site footer.
 
 Developers can adjust the synced text per post via the
-`bellaworks_chat_post_content` filter:
+`bw_ai_chat_post_content` filter:
 
-`add_filter( 'bellaworks_chat_post_content', fn( $content, $post ) => $content, 10, 2 );`
+`add_filter( 'bw_ai_chat_post_content', fn( $content, $post ) => $content, 10, 2 );`
 
 Note: with "Include ACF fields" enabled, all text-bearing ACF values sync —
 if a site stores layout-ish text in ACF (button labels etc.), either exclude

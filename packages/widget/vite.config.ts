@@ -10,7 +10,7 @@ export default defineConfig({
     lib: {
       entry: 'src/main.tsx',
       formats: ['iife'],
-      name: 'BellaworksChat',
+      name: 'BwAiChat',
       fileName: () => 'v1.js',
     },
   },

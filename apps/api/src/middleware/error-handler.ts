@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from 'express';
 import multer from 'multer';
 import { ZodError } from 'zod';
-import type { ApiErrorResponse } from '@bellaworks/shared';
+import type { ApiErrorResponse } from '@bw-ai-chat/shared';
 import { HttpError } from '../lib/errors.js';
 import { logger } from '../lib/logger.js';
 

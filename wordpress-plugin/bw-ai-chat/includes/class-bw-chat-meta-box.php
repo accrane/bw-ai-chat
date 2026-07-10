@@ -14,7 +14,7 @@ class BW_Chat_Meta_Box {
 	public static function register() {
 		add_meta_box(
 			'bw-chat-exclude',
-			'Bellaworks Chat',
+			'BW AI Chat',
 			array( __CLASS__, 'render' ),
 			BW_Chat_Settings::get()['post_types'],
 			'side'

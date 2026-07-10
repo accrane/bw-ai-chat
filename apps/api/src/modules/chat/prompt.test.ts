@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { SearchResult } from '@bellaworks/shared';
+import type { SearchResult } from '@bw-ai-chat/shared';
 import { buildMessages, buildSystemPrompt } from './prompt.js';
 
 const chunk = (overrides?: Partial<SearchResult>): SearchResult => ({

@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
-import type { Branding } from '@bellaworks/shared';
+import type { Branding } from '@bw-ai-chat/shared';
 import { patch, type ClientDetail } from '../api';
 import { Button, Card, ErrorNote, Field, TextInput } from '../ui';
 
@@ -10,7 +10,7 @@ declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace JSX {
     interface IntrinsicElements {
-      'bellaworks-chat': {
+      'bw-ai-chat': {
         'client-id': string;
         'api-url': string;
         preview: string;
@@ -52,15 +52,15 @@ function EmbedSnippets({ slug }: { slug: string }) {
       <div className="space-y-4">
         <Snippet
           label="Floating bubble (any website)"
-          code={`<script src="${origin}/widget.js" async></script>\n<bellaworks-chat client-id="${slug}"></bellaworks-chat>`}
+          code={`<script src="${origin}/widget.js" async></script>\n<bw-ai-chat client-id="${slug}"></bw-ai-chat>`}
         />
         <Snippet
           label="Inline panel (renders open, inside your page — e.g. an FAQ page)"
-          code={`<script src="${origin}/widget.js" async></script>\n<bellaworks-chat client-id="${slug}" inline></bellaworks-chat>`}
+          code={`<script src="${origin}/widget.js" async></script>\n<bw-ai-chat client-id="${slug}" inline></bw-ai-chat>`}
         />
         <Snippet
-          label="WordPress (with the Bellaworks Chat plugin): inline shortcode"
-          code="[bellaworks_chat]"
+          label="WordPress (with the BW AI Chat plugin): inline shortcode"
+          code="[bw_ai_chat]"
         />
         <p className="text-xs text-slate-400">
           Inline height defaults to 520px — override with{' '}
@@ -90,7 +90,7 @@ function WidgetPreview({ slug, version }: { slug: string; version: number }) {
 
   if (!scriptReady) return null;
   // key remounts the element after each save so it refetches uncached config
-  return <bellaworks-chat key={version} client-id={slug} api-url={API_ORIGIN} preview="" />;
+  return <bw-ai-chat key={version} client-id={slug} api-url={API_ORIGIN} preview="" />;
 }
 
 export function BrandingTab({ client }: { client: ClientDetail }) {
@@ -205,7 +205,7 @@ export function BrandingTab({ client }: { client: ClientDetail }) {
               value={branding.creditText}
               disabled={!branding.showCredit}
               onChange={(e) => set('creditText', e.target.value)}
-              placeholder="Powered by Bellaworks"
+              placeholder="Powered by BW AI Chat"
             />
           </Field>
           <Field label="Footer credit">

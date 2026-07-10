@@ -1,5 +1,5 @@
 -- Tenant registry. `slug` is the public widget ID embedded on client sites;
--- branding/ai_settings are jsonb validated by zod schemas in @bellaworks/shared.
+-- branding/ai_settings are jsonb validated by zod schemas in @bw-ai-chat/shared.
 
 create or replace function touch_updated_at()
 returns trigger

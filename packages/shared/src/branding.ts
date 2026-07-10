@@ -21,7 +21,7 @@ export const BrandingSchema = z.object({
   position: z.enum(['bottom-right', 'bottom-left']).default('bottom-right'),
   theme: z.enum(['light', 'dark', 'auto']).default('auto'),
   /** Footer credit line in the chat panel; hidden entirely when showCredit is false. */
-  creditText: z.string().max(100).default('Powered by Bellaworks'),
+  creditText: z.string().max(100).default('Powered by BW AI Chat'),
   showCredit: z.boolean().default(true),
 });
 

@@ -3,7 +3,7 @@ import type {
   ConversationResponse,
   WidgetConfigResponse,
   WidgetSessionResponse,
-} from '@bellaworks/shared';
+} from '@bw-ai-chat/shared';
 import { clearSession, loadSession, saveSession, updateConversation } from './session.js';
 import { createSseParser } from './sse.js';
 

@@ -1,6 +1,6 @@
 import { Router, type Request, type Response } from 'express';
 import { z } from 'zod';
-import { AiSettingsSchema, BrandingSchema } from '@bellaworks/shared';
+import { AiSettingsSchema, BrandingSchema } from '@bw-ai-chat/shared';
 import { withDbContext } from '../../db/context.js';
 import { generateApiKey } from '../../lib/crypto.js';
 import { badRequest, notFound } from '../../lib/errors.js';

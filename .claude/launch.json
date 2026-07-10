@@ -10,7 +10,7 @@
     {
       "name": "dashboard",
       "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["--filter", "@bellaworks/dashboard", "dev"],
+      "runtimeArgs": ["--filter", "@bw-ai-chat/dashboard", "dev"],
       "port": 5174
     }
   ]

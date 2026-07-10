@@ -28,7 +28,7 @@ export function Login({ onSuccess }: { onSuccess: () => void }) {
         onSubmit={submit}
         className="w-full max-w-sm space-y-4 rounded-lg border border-slate-200 bg-white p-6"
       >
-        <h1 className="text-lg font-semibold text-slate-900">Bellaworks Chat</h1>
+        <h1 className="text-lg font-semibold text-slate-900">BW AI Chat</h1>
         <Field label="Email">
           <TextInput
             type="email"

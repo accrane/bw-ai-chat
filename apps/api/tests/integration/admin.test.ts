@@ -8,7 +8,7 @@ import { startQueue, stopQueue } from '../../src/queue/queue.js';
 import { registerIngestWorker } from '../../src/queue/worker.js';
 
 const app = createApp();
-const email = `admin-${randomUUID().slice(0, 8)}@bellaworks.test`;
+const email = `admin-${randomUUID().slice(0, 8)}@bw-ai-chat.test`;
 const password = 'correct-horse-battery';
 const slug = `test-${randomUUID().slice(0, 8)}`;
 

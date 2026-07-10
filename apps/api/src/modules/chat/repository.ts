@@ -1,5 +1,5 @@
 import type pg from 'pg';
-import type { ChatHistoryMessage } from '@bellaworks/shared';
+import type { ChatHistoryMessage } from '@bw-ai-chat/shared';
 
 export interface ConversationRecord {
   id: string;

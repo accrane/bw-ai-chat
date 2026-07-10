@@ -1,5 +1,5 @@
 {
-  "name": "@bellaworks/widget",
+  "name": "@bw-ai-chat/widget",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -11,7 +11,7 @@
     "test:unit": "vitest run"
   },
   "dependencies": {
-    "@bellaworks/shared": "workspace:*",
+    "@bw-ai-chat/shared": "workspace:*",
     "preact": "^10.25.0"
   },
   "devDependencies": {
