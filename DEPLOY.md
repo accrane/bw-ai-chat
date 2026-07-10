@@ -3,12 +3,12 @@
 Target: the existing Hostinger KVM 2 VPS (2 CPU / 8 GB) already running n8n.
 The n8n compose project's **Traefik** owns ports 80/443 and terminates TLS;
 our API container joins its `n8n_default` docker network and registers the
-route `https://chat.bellaworksweb.com` via labels — n8n is never touched.
+route `https://chatai.bellaworksweb.com` via labels — n8n is never touched.
 
 ```
 Traefik (n8n project, ports 80/443)
   ├── automation.bellaworksweb.com → n8n
-  └── chat.bellaworksweb.com      → bw-ai-chat api ── internal network ── postgres (pgvector)
+  └── chatai.bellaworksweb.com      → bw-ai-chat api ── internal network ── postgres (pgvector)
                                                                             └── nightly pg_dump → ./backups
 ```
 
@@ -46,7 +46,7 @@ In the GitHub repo → Settings → Secrets and variables → Actions, add:
 
 Domains → bellaworksweb.com → DNS: add an **A record** `chat` → VPS IP
 (copy the value from the existing `automation` record). Wait for it to
-resolve: `dig +short chat.bellaworksweb.com`.
+resolve: `dig +short chatai.bellaworksweb.com`.
 
 ### 3. VPS directory + secrets
 
@@ -79,7 +79,7 @@ the image, pushes to GHCR, and runs `/opt/bw-ai-chat/deploy.sh` over SSH,
 which applies migrations before starting the API. Then verify:
 
 ```bash
-curl https://chat.bellaworksweb.com/health     # {"ok":true,"db":"up"}
+curl https://chatai.bellaworksweb.com/health     # {"ok":true,"db":"up"}
 ```
 
 ### 5. First admin + first client
@@ -89,9 +89,9 @@ cd /opt/bw-ai-chat
 docker compose run --rm api node apps/api/dist/scripts/create-admin.js austin@bellaworksweb.com '<strong password>' 'Austin'
 ```
 
-Log into `https://chat.bellaworksweb.com/admin`, create the client, copy its
+Log into `https://chatai.bellaworksweb.com/admin`, create the client, copy its
 `bw_sk_...` API key, then in the client site's WP admin (BW AI Chat settings)
-set the API URL to `https://chat.bellaworksweb.com` and paste the key.
+set the API URL to `https://chatai.bellaworksweb.com` and paste the key.
 
 ---
 
