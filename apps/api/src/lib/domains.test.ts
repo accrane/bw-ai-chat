@@ -43,6 +43,6 @@ describe('isOriginAllowed', () => {
 
 describe('normalizeDomain', () => {
   it('trims, lowercases, and strips trailing dots', () => {
-    expect(normalizeDomain('  Demo Client.COM. ')).toBe('demo-client.com');
+    expect(normalizeDomain('  Demo-Client.COM. ')).toBe('demo-client.com');
   });
 });
