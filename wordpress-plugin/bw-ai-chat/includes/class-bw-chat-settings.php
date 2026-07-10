@@ -88,7 +88,7 @@ class BW_Chat_Settings {
 				<table class="form-table" role="presentation">
 					<tr>
 						<th scope="row"><label for="bw_api_url">API URL</label></th>
-						<td><input type="url" id="bw_api_url" class="regular-text" name="<?php echo esc_attr( self::OPTION ); ?>[api_url]" value="<?php echo esc_attr( $s['api_url'] ); ?>" placeholder="https://chat.bellaworks.ai" /></td>
+						<td><input type="url" id="bw_api_url" class="regular-text" name="<?php echo esc_attr( self::OPTION ); ?>[api_url]" value="<?php echo esc_attr( $s['api_url'] ); ?>" placeholder="https://chatai.bellaworksweb.com" /></td>
 					</tr>
 					<tr>
 						<th scope="row"><label for="bw_client_id">Client ID</label></th>
