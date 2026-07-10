@@ -36,10 +36,10 @@ ssh-copy-id -i ~/.ssh/bw-chat-deploy.pub root@<VPS_IP>
 
 In the GitHub repo → Settings → Secrets and variables → Actions, add:
 
-| Secret        | Value                                  |
-| ------------- | -------------------------------------- |
-| `VPS_HOST`    | the VPS IP                             |
-| `VPS_USER`    | `root` (or your VPS user)              |
+| Secret        | Value                                                 |
+| ------------- | ----------------------------------------------------- |
+| `VPS_HOST`    | the VPS IP                                            |
+| `VPS_USER`    | `root` (or your VPS user)                             |
 | `VPS_SSH_KEY` | contents of `~/.ssh/bw-chat-deploy` (the private key) |
 
 ### 2. DNS (hPanel)
@@ -97,13 +97,13 @@ set the API URL to `https://chat.bellaworksweb.com` and paste the key.
 
 ## Routine operations
 
-| Task              | Command                                                              |
-| ----------------- | -------------------------------------------------------------------- |
-| Deploy            | push to `main` (or Actions → Build and deploy → Run workflow)        |
-| Manual deploy     | `ssh root@<VPS_IP> /opt/bw-ai-chat/deploy.sh`                        |
-| API logs          | `docker compose -f /opt/bw-ai-chat/docker-compose.yml logs -f api`   |
-| Restart API       | `docker compose -f /opt/bw-ai-chat/docker-compose.yml restart api`   |
-| Rollback          | set `API_IMAGE=ghcr.io/accrane/bw-ai-chat-api:<old-sha>` in `.env`, run `./deploy.sh` |
+| Task          | Command                                                                               |
+| ------------- | ------------------------------------------------------------------------------------- |
+| Deploy        | push to `main` (or Actions → Build and deploy → Run workflow)                         |
+| Manual deploy | `ssh root@<VPS_IP> /opt/bw-ai-chat/deploy.sh`                                         |
+| API logs      | `docker compose -f /opt/bw-ai-chat/docker-compose.yml logs -f api`                    |
+| Restart API   | `docker compose -f /opt/bw-ai-chat/docker-compose.yml restart api`                    |
+| Rollback      | set `API_IMAGE=ghcr.io/accrane/bw-ai-chat-api:<old-sha>` in `.env`, run `./deploy.sh` |
 
 Every push to `main` also tags the image with the commit SHA, so any previous
 build can be pinned for rollback.

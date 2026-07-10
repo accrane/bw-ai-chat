@@ -12,7 +12,7 @@ single API that owns the OpenAI relationship.
 | `apps/dashboard`      | React admin dashboard (Phase 6, placeholder)                                        |
 | `packages/shared`     | zod schemas + API types shared across API, widget, dashboard                        |
 | `packages/widget`     | Embeddable web-component widget (Phase 4, placeholder)                              |
-| `wordpress-plugin`    | Content-sync companion plugin (`bw-ai-chat/`) + Docker dev env (`dev/`)        |
+| `wordpress-plugin`    | Content-sync companion plugin (`bw-ai-chat/`) + Docker dev env (`dev/`)             |
 | `supabase/migrations` | Database migrations (Supabase CLI)                                                  |
 | `test-pages`          | Static pages for exercising the API from a real browser                             |
 
