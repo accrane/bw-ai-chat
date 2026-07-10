@@ -12,7 +12,7 @@ until WP core is-installed 2>/dev/null || WP core version >/dev/null 2>&1; do sl
 if ! WP core is-installed 2>/dev/null; then
   WP core install \
     --url=http://localhost:8080 \
-    --title="Whitewater Rafting Co." \
+    --title="Demo Client Co." \
     --admin_user=admin --admin_password=admin --admin_email=admin@example.com \
     --skip-email
 fi
@@ -23,7 +23,7 @@ WP plugin activate bw-ai-chat
 WP option update bw_chat_settings --format=json "$(cat <<JSON
 {
   "api_url": "http://host.docker.internal:3001",
-  "client_id": "whitewater",
+  "client_id": "demo-client",
   "api_key": "${API_KEY}",
   "post_types": ["page", "post"],
   "embed_widget": true,

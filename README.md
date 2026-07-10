@@ -27,7 +27,7 @@ cp apps/api/.env.example apps/api/.env
 
 pnpm db:start           # local Supabase stack (applies migrations)
 pnpm db:role            # grants LOGIN to the RLS-enforced app_api role
-pnpm seed               # creates the demo "whitewater" client + API key
+pnpm seed               # creates the demo "demo-client" client + API key
 
 pnpm dev                # API on http://localhost:3001
 ```
@@ -35,8 +35,8 @@ pnpm dev                # API on http://localhost:3001
 Quick check (the Origin header is what domain validation keys off):
 
 ```bash
-curl -H "Origin: https://whitewater.com" http://localhost:3001/v1/widget/whitewater/config
-curl -X POST -H "Origin: https://whitewater.com" http://localhost:3001/v1/widget/whitewater/session
+curl -H "Origin: https://demo-client.com" http://localhost:3001/v1/widget/demo-client/config
+curl -X POST -H "Origin: https://demo-client.com" http://localhost:3001/v1/widget/demo-client/session
 ```
 
 Knowledge base (Phase 2) — `pnpm ingest-samples` loads demo content, then:
@@ -56,7 +56,7 @@ Widget (Phase 4) — embed on any allowed domain with two tags:
 
 ```html
 <script src="http://localhost:3001/widget.js"></script>
-<bw-ai-chat client-id="whitewater"></bw-ai-chat>
+<bw-ai-chat client-id="demo-client"></bw-ai-chat>
 ```
 
 See it live: serve `test-pages/` (`python3 -m http.server 5173 --directory test-pages`)
@@ -90,7 +90,7 @@ proving cross-tenant reads are impossible even for unfiltered queries.
 
 ## Architecture notes (Phase 1)
 
-- **Two credentials per client.** The public slug (`whitewater`) identifies a
+- **Two credentials per client.** The public slug (`demo-client`) identifies a
   client in the browser and is guarded by the per-client domain allow-list;
   secret `bw_sk_…` keys (stored as SHA-256 hashes) are for server-to-server
   use only (WordPress plugin, dashboard).

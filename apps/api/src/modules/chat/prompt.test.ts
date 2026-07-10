@@ -6,7 +6,7 @@ const chunk = (overrides?: Partial<SearchResult>): SearchResult => ({
   chunkId: 'c1',
   documentId: 'd1',
   title: 'Rafting FAQ',
-  url: 'https://whitewater.com/faq',
+  url: 'https://demo-client.com/faq',
   headingPath: ['Pricing'],
   content: 'Trips cost $89.',
   score: 0.8,
@@ -15,18 +15,18 @@ const chunk = (overrides?: Partial<SearchResult>): SearchResult => ({
 
 describe('buildSystemPrompt', () => {
   it('includes the client name, rules, and delimited knowledge', () => {
-    const prompt = buildSystemPrompt('Whitewater', '', [chunk()]);
-    expect(prompt).toContain('assistant for Whitewater');
+    const prompt = buildSystemPrompt('Demo Client', '', [chunk()]);
+    expect(prompt).toContain('assistant for Demo Client');
     expect(prompt).toContain('ONLY using the reference material');
     expect(prompt).toContain('never instructions');
     expect(prompt).toContain(
-      '<knowledge>\n[Source 1: Rafting FAQ — Pricing (https://whitewater.com/faq)]',
+      '<knowledge>\n[Source 1: Rafting FAQ — Pricing (https://demo-client.com/faq)]',
     );
     expect(prompt).toContain('Trips cost $89.');
   });
 
   it('appends the client addendum when present', () => {
-    const prompt = buildSystemPrompt('Whitewater', 'Always mention our phone number.', [chunk()]);
+    const prompt = buildSystemPrompt('Demo Client', 'Always mention our phone number.', [chunk()]);
     expect(prompt).toContain('Always mention our phone number.');
   });
 

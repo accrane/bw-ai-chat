@@ -7,8 +7,8 @@
  *   pnpm --filter @bw-ai-chat/api exec tsx scripts/load-baseline.ts
  */
 const API = process.env.LOAD_API ?? 'http://localhost:3001';
-const SLUG = process.env.LOAD_SLUG ?? 'whitewater';
-const ORIGIN = 'https://whitewater.com';
+const SLUG = process.env.LOAD_SLUG ?? 'demo-client';
+const ORIGIN = 'https://demo-client.com';
 const CONCURRENCY = Number(process.env.LOAD_CONCURRENCY ?? 10);
 const DURATION_MS = Number(process.env.LOAD_DURATION_MS ?? 10_000);
 

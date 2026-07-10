@@ -4,8 +4,8 @@ import { signSessionToken, verifySessionToken } from './session-token.js';
 const secret = 'test-secret-0123456789abcdefghijklmnopqrstuv';
 const claims = {
   clientId: 'f2f9a1f2-0000-4000-8000-000000000001',
-  slug: 'whitewater',
-  origin: 'https://whitewater.com',
+  slug: 'demo-client',
+  origin: 'https://demo-client.com',
 };
 
 describe('session tokens', () => {

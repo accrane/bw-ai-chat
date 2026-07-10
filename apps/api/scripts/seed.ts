@@ -1,5 +1,5 @@
 /**
- * Seeds the demo "whitewater" client (idempotent) and prints a secret API key
+ * Seeds the demo "demo-client" client (idempotent) and prints a secret API key
  * on first run. Uses the privileged connection — seeding is admin work.
  */
 import { AiSettingsSchema, BrandingSchema } from '@bw-ai-chat/shared';
@@ -7,8 +7,8 @@ import { adminPool } from '../src/db/pool.js';
 import { generateApiKey } from '../src/lib/crypto.js';
 
 const branding = BrandingSchema.parse({
-  companyName: 'Whitewater',
-  welcomeMessage: 'Welcome to Whitewater! Ask us anything about our services.',
+  companyName: 'Demo Client',
+  welcomeMessage: 'Welcome to Demo Client! Ask us anything about our services.',
   primaryColor: '#0e7490',
   secondaryColor: '#155e75',
 });
@@ -17,7 +17,7 @@ const branding = BrandingSchema.parse({
 // raise toward the 0.3 default when using real OpenAI embeddings.
 const aiSettings = AiSettingsSchema.parse({ relevanceThreshold: 0.05 });
 
-const allowedDomains = ['whitewater.com', 'www.whitewater.com', 'localhost', '127.0.0.1'];
+const allowedDomains = ['demo-client.com', 'www.demo-client.com', 'localhost', '127.0.0.1'];
 
 const { rows } = await adminPool.query<{ id: string }>(
   `insert into clients (slug, name, status, allowed_domains, branding, ai_settings)
@@ -28,10 +28,10 @@ const { rows } = await adminPool.query<{ id: string }>(
          branding = excluded.branding,
          ai_settings = excluded.ai_settings
    returning id`,
-  ['whitewater', 'Whitewater Rafting Co.', allowedDomains, branding, aiSettings],
+  ['demo-client', 'Demo Client Co.', allowedDomains, branding, aiSettings],
 );
 const clientId = rows[0]!.id;
-console.log(`client "whitewater" ready (${clientId})`);
+console.log(`client "demo-client" ready (${clientId})`);
 console.log(`allowed domains: ${allowedDomains.join(', ')}`);
 
 const existing = await adminPool.query(

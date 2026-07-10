@@ -2,31 +2,31 @@ import { describe, expect, it } from 'vitest';
 import { isOriginAllowed, normalizeDomain } from './domains.js';
 
 describe('isOriginAllowed', () => {
-  const allowed = ['whitewater.com', 'www.whitewater.com', 'localhost'];
+  const allowed = ['demo-client.com', 'www.demo-client.com', 'localhost'];
 
   it('matches an exact hostname', () => {
-    expect(isOriginAllowed('https://whitewater.com', allowed)).toBe(true);
-    expect(isOriginAllowed('https://www.whitewater.com', allowed)).toBe(true);
+    expect(isOriginAllowed('https://demo-client.com', allowed)).toBe(true);
+    expect(isOriginAllowed('https://www.demo-client.com', allowed)).toBe(true);
   });
 
   it('ignores ports (matching is hostname-only)', () => {
     expect(isOriginAllowed('http://localhost:5173', allowed)).toBe(true);
     expect(isOriginAllowed('http://localhost:3000', allowed)).toBe(true);
-    expect(isOriginAllowed('https://whitewater.com:8443', allowed)).toBe(true);
+    expect(isOriginAllowed('https://demo-client.com:8443', allowed)).toBe(true);
   });
 
   it('is case-insensitive', () => {
-    expect(isOriginAllowed('https://WhiteWater.COM', allowed)).toBe(true);
-    expect(isOriginAllowed('https://whitewater.com', ['WHITEWATER.COM'])).toBe(true);
+    expect(isOriginAllowed('https://Demo-Client.COM', allowed)).toBe(true);
+    expect(isOriginAllowed('https://demo-client.com', ['DEMO-CLIENT.COM'])).toBe(true);
   });
 
   it('rejects subdomains not explicitly listed', () => {
-    expect(isOriginAllowed('https://app.whitewater.com', allowed)).toBe(false);
-    expect(isOriginAllowed('https://whitewater.com.evil.com', allowed)).toBe(false);
+    expect(isOriginAllowed('https://app.demo-client.com', allowed)).toBe(false);
+    expect(isOriginAllowed('https://demo-client.com.evil.com', allowed)).toBe(false);
   });
 
   it('rejects lookalike suffixes', () => {
-    expect(isOriginAllowed('https://evilwhitewater.com', allowed)).toBe(false);
+    expect(isOriginAllowed('https://evildemo-client.com', allowed)).toBe(false);
   });
 
   it('rejects missing, null, or malformed origins', () => {
@@ -37,12 +37,12 @@ describe('isOriginAllowed', () => {
   });
 
   it('rejects everything when the allow-list is empty', () => {
-    expect(isOriginAllowed('https://whitewater.com', [])).toBe(false);
+    expect(isOriginAllowed('https://demo-client.com', [])).toBe(false);
   });
 });
 
 describe('normalizeDomain', () => {
   it('trims, lowercases, and strips trailing dots', () => {
-    expect(normalizeDomain('  Whitewater.COM. ')).toBe('whitewater.com');
+    expect(normalizeDomain('  Demo Client.COM. ')).toBe('demo-client.com');
   });
 });

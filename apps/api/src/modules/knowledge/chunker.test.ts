@@ -14,12 +14,12 @@ describe('chunkDocument', () => {
       '## Safety',
       'Helmets are required at all times.',
     ].join('\n\n');
-    const chunks = chunkDocument('Whitewater FAQ', md);
+    const chunks = chunkDocument('Demo Client FAQ', md);
     const paths = chunks.flatMap((c) => [c.headingPath.join(' > ')]);
     expect(paths.join('|')).toContain('Trips');
     // small sections merge, but the heading structure is preserved somewhere
     expect(chunks.every((c) => c.headingPath[0] === 'Trips')).toBe(true);
-    expect(chunks[0]!.embedInput.startsWith('Whitewater FAQ > Trips')).toBe(true);
+    expect(chunks[0]!.embedInput.startsWith('Demo Client FAQ > Trips')).toBe(true);
   });
 
   it('splits sections into separate chunks once they are big enough', () => {

@@ -72,7 +72,7 @@ export function ClientList() {
               <TextInput
                 value={slug}
                 onChange={(e) => setSlug(e.target.value)}
-                placeholder="whitewater"
+                placeholder="demo-client"
                 required
               />
             </Field>
@@ -80,7 +80,7 @@ export function ClientList() {
               <TextInput
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Whitewater Rafting Co."
+                placeholder="Demo Client Co."
                 required
               />
             </Field>

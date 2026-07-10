@@ -53,7 +53,7 @@ const pad = (topic: string): string =>
 
 const FAQ_MD = `# Trips
 
-We offer half-day and full-day whitewater rafting trips on the Chattooga river. ${pad('trips')}
+We offer half-day and full-day demo-client rafting trips on the Chattooga river. ${pad('trips')}
 
 ## Pricing
 

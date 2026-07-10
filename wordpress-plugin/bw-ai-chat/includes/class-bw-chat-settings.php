@@ -92,7 +92,7 @@ class BW_Chat_Settings {
 					</tr>
 					<tr>
 						<th scope="row"><label for="bw_client_id">Client ID</label></th>
-						<td><input type="text" id="bw_client_id" class="regular-text" name="<?php echo esc_attr( self::OPTION ); ?>[client_id]" value="<?php echo esc_attr( $s['client_id'] ); ?>" placeholder="whitewater" /></td>
+						<td><input type="text" id="bw_client_id" class="regular-text" name="<?php echo esc_attr( self::OPTION ); ?>[client_id]" value="<?php echo esc_attr( $s['client_id'] ); ?>" placeholder="demo-client" /></td>
 					</tr>
 					<tr>
 						<th scope="row"><label for="bw_api_key">API Key</label></th>

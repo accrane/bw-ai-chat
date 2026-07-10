@@ -1,5 +1,5 @@
 /**
- * Phase 2 demo: ingests sample knowledge for the seeded "whitewater" client
+ * Phase 2 demo: ingests sample knowledge for the seeded "demo-client" client
  * through the real pipeline (queue → worker → chunks → embeddings), then runs
  * a search and prints the ranked results.
  */
@@ -14,10 +14,10 @@ const SAMPLES = [
     sourceType: 'markdown' as const,
     sourceId: 'sample-faq',
     title: 'Rafting FAQ',
-    url: 'https://whitewater.com/faq',
+    url: 'https://demo-client.com/faq',
     content: `# Trips
 
-We offer half-day and full-day whitewater rafting trips on the Chattooga river, from March through October.
+We offer half-day and full-day demo-client rafting trips on the Chattooga river, from March through October.
 
 ## Pricing
 
@@ -31,7 +31,7 @@ Bring a swimsuit, sunscreen, and water shoes. We provide helmets, paddles, life 
     sourceType: 'markdown' as const,
     sourceId: 'sample-policies',
     title: 'Booking & Cancellation Policies',
-    url: 'https://whitewater.com/policies',
+    url: 'https://demo-client.com/policies',
     content: `# Cancellations
 
 Cancel at least 48 hours before your trip for a full refund. Cancellations within 48 hours receive a rain check valid for one year. No-shows are not refunded.
@@ -44,7 +44,7 @@ Trips run rain or shine. If the river is unsafe, we cancel and refund everyone i
     sourceType: 'markdown' as const,
     sourceId: 'sample-safety',
     title: 'Safety Requirements',
-    url: 'https://whitewater.com/safety',
+    url: 'https://demo-client.com/safety',
     content: `# Safety
 
 All guests must be at least 8 years old and able to swim. Helmets and life jackets are mandatory on the water. Guests under 18 need a guardian's signature on the waiver.`,
@@ -52,11 +52,11 @@ All guests must be at least 8 years old and able to swim. Helmets and life jacke
 ];
 
 const { rows } = await adminPool.query<{ id: string }>(
-  `select id from clients where slug = 'whitewater'`,
+  `select id from clients where slug = 'demo-client'`,
 );
 const clientId = rows[0]?.id;
 if (!clientId) {
-  console.error('Seed the whitewater client first: pnpm seed');
+  console.error('Seed the demo-client client first: pnpm seed');
   process.exit(1);
 }
 
