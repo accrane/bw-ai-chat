@@ -22,11 +22,13 @@ require_once BW_CHAT_DIR . 'includes/class-bw-chat-content-extractor.php';
 require_once BW_CHAT_DIR . 'includes/class-bw-chat-sync.php';
 require_once BW_CHAT_DIR . 'includes/class-bw-chat-meta-box.php';
 require_once BW_CHAT_DIR . 'includes/class-bw-chat-widget-embed.php';
+require_once BW_CHAT_DIR . 'includes/class-bw-chat-documents.php';
 
 BW_Chat_Settings::init();
 BW_Chat_Sync::init();
 BW_Chat_Meta_Box::init();
 BW_Chat_Widget_Embed::init();
+BW_Chat_Documents::init();
 
 register_activation_hook( __FILE__, array( 'BW_Chat_Sync', 'activate' ) );
 register_deactivation_hook( __FILE__, array( 'BW_Chat_Sync', 'deactivate' ) );

@@ -18,6 +18,9 @@ WordPress publishes content; all AI processing happens on the Bellaworks platfor
   answer sub-fields) become their own sections so each FAQ is individually
   retrievable by the chat.
 * "Exclude from chat" checkbox per post.
+* Document upload for off-site knowledge (handbooks, price sheets, policies):
+  PDF/DOCX/TXT/MD files are forwarded to the platform and become searchable
+  chat knowledge without appearing on the website. Re-upload to replace.
 * Sync Now button plus daily scheduled reconciliation with orphan cleanup.
 * Optional one-checkbox embed of the chat widget in the site footer.
 

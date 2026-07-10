@@ -72,9 +72,17 @@ class BW_Chat_Settings {
 		$status = BW_Chat_Sync::status();
 		$types  = get_post_types( array( 'public' => true ), 'objects' );
 		unset( $types['attachment'] );
+		// One-shot notice from the document upload/delete handlers.
+		$notice   = isset( $_GET['bw_notice'] ) ? sanitize_text_field( rawurldecode( wp_unslash( $_GET['bw_notice'] ) ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display only
+		$is_error = ! empty( $_GET['bw_error'] ) && '1' === $_GET['bw_error']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		?>
 		<div class="wrap">
 			<h1>Bellaworks Chat</h1>
+			<?php if ( $notice ) : ?>
+				<div class="notice <?php echo $is_error ? 'notice-error' : 'notice-success'; ?> is-dismissible">
+					<p><?php echo esc_html( $notice ); ?></p>
+				</div>
+			<?php endif; ?>
 			<form method="post" action="options.php">
 				<?php settings_fields( 'bw_chat' ); ?>
 				<table class="form-table" role="presentation">
@@ -160,6 +168,8 @@ class BW_Chat_Settings {
 					<?php endforeach; ?>
 				</ul>
 			<?php endif; ?>
+
+			<?php BW_Chat_Documents::render_section(); ?>
 		</div>
 		<?php
 	}

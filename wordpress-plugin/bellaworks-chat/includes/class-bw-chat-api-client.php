@@ -34,6 +34,10 @@ class BW_Chat_API_Client {
 			$args['body'] = wp_json_encode( $body );
 		}
 		$response = wp_remote_request( $this->api_url . $path, $args );
+		return $this->handle_response( $response );
+	}
+
+	private function handle_response( $response ) {
 		if ( is_wp_error( $response ) ) {
 			return array(
 				'ok'    => false,
@@ -73,10 +77,42 @@ class BW_Chat_API_Client {
 		return $this->request( 'DELETE', '/v1/knowledge/documents/' . rawurlencode( $document_id ) );
 	}
 
+	public function list_documents( $limit = 100, $offset = 0, $source_type = null ) {
+		$query = '?limit=' . (int) $limit . '&offset=' . (int) $offset;
+		if ( $source_type ) {
+			$query .= '&sourceType=' . rawurlencode( $source_type );
+		}
+		return $this->request( 'GET', '/v1/knowledge/documents' . $query );
+	}
+
 	public function list_wordpress_documents( $limit = 100, $offset = 0 ) {
-		return $this->request(
-			'GET',
-			'/v1/knowledge/documents?sourceType=wordpress&limit=' . (int) $limit . '&offset=' . (int) $offset
-		);
+		return $this->list_documents( $limit, $offset, 'wordpress' );
+	}
+
+	/** Forwards an uploaded file to the platform's extraction + ingestion pipeline. */
+	public function upload_file( $filename, $tmp_path ) {
+		$content = file_get_contents( $tmp_path ); // phpcs:ignore WordPress.WP.AlternativeFunctions -- local tmp file
+		if ( false === $content ) {
+			return array(
+				'ok'    => false,
+				'error' => 'Could not read the uploaded file.',
+			);
+		}
+		$boundary = wp_generate_password( 24, false );
+		$body     = "--{$boundary}\r\n"
+			. 'Content-Disposition: form-data; name="file"; filename="' . $filename . "\"\r\n"
+			. "Content-Type: application/octet-stream\r\n\r\n"
+			. $content . "\r\n"
+			. "--{$boundary}--\r\n";
+
+		$response = wp_remote_post( $this->api_url . '/v1/knowledge/documents/file', array(
+			'timeout' => 60,
+			'headers' => array(
+				'Authorization' => 'Bearer ' . $this->api_key,
+				'Content-Type'  => 'multipart/form-data; boundary=' . $boundary,
+			),
+			'body'    => $body,
+		) );
+		return $this->handle_response( $response );
 	}
 }
