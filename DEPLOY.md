@@ -63,7 +63,7 @@ cp .env.example .env && chmod 600 .env && chmod +x deploy.sh
 ```
 
 Fill every value in `.env` — each has a generation command in the comments
-(`openssl rand -base64 ...`). Set `API_IMAGE=ghcr.io/<github-username>/bw-ai-chat-api:latest`.
+(`openssl rand -base64 ...`). Set `API_IMAGE=ghcr.io/accrane/bw-ai-chat-api:latest`.
 
 The GHCR image is private, so log docker in once (PAT with `read:packages`
 from GitHub → Settings → Developer settings → Tokens (classic)):
@@ -103,7 +103,7 @@ set the API URL to `https://chat.bellaworksweb.com` and paste the key.
 | Manual deploy     | `ssh root@<VPS_IP> /opt/bw-ai-chat/deploy.sh`                        |
 | API logs          | `docker compose -f /opt/bw-ai-chat/docker-compose.yml logs -f api`   |
 | Restart API       | `docker compose -f /opt/bw-ai-chat/docker-compose.yml restart api`   |
-| Rollback          | set `API_IMAGE=ghcr.io/<user>/bw-ai-chat-api:<old-sha>` in `.env`, run `./deploy.sh` |
+| Rollback          | set `API_IMAGE=ghcr.io/accrane/bw-ai-chat-api:<old-sha>` in `.env`, run `./deploy.sh` |
 
 Every push to `main` also tags the image with the commit SHA, so any previous
 build can be pinned for rollback.
