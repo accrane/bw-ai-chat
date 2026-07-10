@@ -118,18 +118,41 @@ WordPress, so worst case is losing chat history since the last dump.
 free. For tighter coverage, add an `rclone` cron to any cheap object storage
 (Backblaze B2, Cloudflare R2) syncing `/opt/bw-ai-chat/backups/daily/`.
 
-**Restore drill** (run it once now, not during an outage):
+**Restore drill** (zero-downtime; proves a dump is restorable without
+touching the live database — first run verified 2026-07-10, all row counts
+matched):
+
+```bash
+cd /opt/bw-ai-chat
+docker compose exec -T db psql -U postgres -c "create database restore_drill"
+gunzip -c backups/daily/postgres-latest.sql.gz | docker compose exec -T db psql -U postgres -d restore_drill -q
+docker compose exec -T db psql -U postgres -d restore_drill -c "select count(*) from documents"  # compare to live
+docker compose exec -T db psql -U postgres -c "drop database restore_drill"
+```
+
+**Real disaster restore** (live data lost/corrupted — dumps are plain SQL,
+so they must go into an _empty_ database, never over a populated one):
 
 ```bash
 cd /opt/bw-ai-chat
 docker compose stop api
-gunzip -c backups/daily/postgres-latest.sql.gz | docker compose exec -T db psql -U postgres -d postgres
-docker compose run --rm api node apps/api/dist/scripts/db-role.js
+docker compose exec -T db psql -U postgres -d template1 \
+  -c "drop database postgres" -c "create database postgres"
+gunzip -c backups/daily/postgres-latest.sql.gz | docker compose exec -T db psql -U postgres -d postgres -q
 docker compose start api
 ```
 
-(For a truly fresh database — new volume — run `./deploy.sh` instead of the
-last two lines; it applies migrations and role grants before starting.)
+If the whole Postgres volume is gone (new server), the cluster-level
+`app_api` role won't exist yet — create it before restoring the dump, then
+re-grant its password after:
+
+```bash
+docker compose up -d db
+docker compose exec -T db psql -U postgres -c "create role app_api nologin"
+# ...restore the dump as above, then:
+docker compose run --rm api node apps/api/dist/scripts/db-role.js
+docker compose up -d
+```
 
 ## Widget version bump
 
