@@ -22,4 +22,11 @@ jobs:
       - run: pnpm typecheck
       # Unit tests only in CI for now; integration tests need the local
       # Supabase stack (`pnpm db:start`) and run on developer machines.
+      # Env config is strictly validated at import, so provide CI-only values;
+      # unit tests never open a database connection.
       - run: pnpm test:unit
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/postgres
+          APP_DATABASE_URL: postgresql://app_api:app_api@127.0.0.1:5432/postgres
+          SESSION_JWT_SECRET: ci-only-session-secret-0123456789abcdef
+          ADMIN_JWT_SECRET: ci-only-admin-secret-0123456789abcdefgh
